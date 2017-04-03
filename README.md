@@ -5,10 +5,10 @@ Analyzing and visualizing sports statistics
 ### Statement
 <!--- Describe your project. Why is it interesting? Why is it interesting to you personally? What do you hope to learn? --->
 
-We're both interestd in this project because we thought it'd be a perfect fit for our interests in sports and also mathematics. As a result we 
+We're both interested in this project because we thought it'd be a perfect fit for our interests in sports and also mathematics. As a result we came up with this idea to visualize sports data in an interactive way. 
 
 This project will require us to retrieve data from a database using an api and extract useful bits of information that we can use to draw graphs and/or charts to visualize statistical comparisons and also make predictions(\*).
-This 
+
 
 ### Analysis
 Explain what approaches from class you will bring to bear on the project.
@@ -17,17 +17,19 @@ Be explicit about the techiques from the class that you will use. For example:
 
 - Will you use data abstraction? How?
 - Will you use recursion? How?
-- Will you use map/filter/reduce? How? 
-- Will you use object-orientation? How?
+- Will you use map/filter/reduce? Map should be useful in arranging our input JSON into lists we can manipulate programatically.
+       	       			  Filter will be the obvious choice when it comes time to select the appropriate data-set based on user input/desired output.
+- Will you use object-orientation? How? Object-orientation will be a useful tool in our arsenal to manipulate our data, and provide access to that data to 
+       	       			   	various modules of our program. 
 <!---
 - Will you use functional approaches to processing your data? How?
 - Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
 - Will you use lazy evaluation approaches?
 --->
-Since the data we'll be using for will be retrieved from a JSON obuject, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
+Since the data we'll be using for will be retrieved from a JSON object, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
 
-some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require ccreating objects to represent different players and teams, thus the need for object orientation.
+some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require creating objects to represent different players and teams, thus the need for object orientation.
 We'll need to recursively call functions to 'cdr' through while process =ing data in different lists and/or ring buffers.
 <!---
 The idea here is to identify what ideas from the class you will use in carrying out your project. 
@@ -38,26 +40,25 @@ The idea here is to identify what ideas from the class you will use in carrying 
 ### External Technologies
 
 - Retrieve information or publish data to the web 
-- Interact with databases 
+- Interact with databases
+- JSON to jsexpr
 
 ### Data Sets or other Source Materials
-We shall use the National Basketball Associaiton's api to retrieve data from its database http://stats.nba.com. This data will be presented as json object which will be parsed, sorted and presented in forms of graphs. 
-
+We shall use the National Basketball Association's api to retrieve data from it's database (http://stats.nba.com). This data will be presented as json object which will be parsed, sorted and presented in forms of graphs. 
 
 <!--- How will you convert your data into a form usable for your project?   --->
 
 The data we're using is received in JSON format. (snippet in testcode.rkt) We plan on using racket's list processing to make use present data belonging to one entity. 
 
 
-
 ### Deliverable and Demonstration
 
 We hope to have a fully funtional program that can take input retrieved from a database, and present it in a format that a user chooses. If a user want s to compare different statistics between two different players or teams, theyy can fire up the repl, and choose from the options listed in a menu. Comparisons are to be presented as graphs/plots and charts if manageable. 
 
-The program will therefore rely entirely on data provided from the stats.nba.coim website. Although if we manage to 
+The program will therefore rely entirely on data provided from the stats.nba.com website. Although if we manage to 
  implement the portion for the NBA, we may try to attempt to do the same for data from other sports like soccer or baseball. 
 
-The only form of interactivity that has been envisioned will be theability to have a user choose between different players or different teams and compare certain aspects that we can provide. 
+The only form of interactivity that has been envisioned will be the ability to have a user choose between different players or different teams and compare certain aspects that we can provide. 
 This will involve some sort of menu that a user can check out for the supported teams and/or players.
 
 <!---
@@ -76,7 +77,7 @@ How will you know if you are successful?
 If we can successfully process each user's request from the given options and visualize the requested comparisons and/or make future predictions(this willbe implmented if there's enough time left when the main project is complete), while always processing the latest available data from the league's games, we shall have successfully completed out project.
 
 ## Architecture Diagram
-Upload the architecture diagram you made for your slide presentation to your repository, and include it in-line here.
+![Alt text](/ArchDiag.jpg?raw=true)
 
 Create several paragraphs of narrative to explain the pieces and how they interoperate.
 
@@ -119,5 +120,6 @@ I will implment the visual part of the program, handle drawing charts and plots.
 
 
 ### Daniel DiTommaso @DanielDiTommaso
-will work on...
+Setting up web application / user interface to communicate with the user. 
+Data retrieval and storage for use elsewhere in the application. 
    
