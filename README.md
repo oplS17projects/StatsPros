@@ -77,7 +77,7 @@ How will you know if you are successful?
 If we can successfully process each user's request from the given options and visualize the requested comparisons and/or make future predictions(this willbe implmented if there's enough time left when the main project is complete), while always processing the latest available data from the league's games, we shall have successfully completed out project.
 
 ## Architecture Diagram
-![Alt text](/ArchDiag.jpg?raw=true)
+![Alt text](/resources/ArchDiag.jpg?raw=true)
 
 Create several paragraphs of narrative to explain the pieces and how they interoperate.
 
