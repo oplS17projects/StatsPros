@@ -117,6 +117,6 @@ In the headings below, replace the silly names and GitHub handles with your actu
 I will implment the visual part of the program, handle drawing charts and plots. I will also handle the statistical analysis of the data that we shall be processing.
 
 
-### Leonard Lambda @lennylambda
+### Daniel DiTommaso @DanielDiTommaso
 will work on...
    
