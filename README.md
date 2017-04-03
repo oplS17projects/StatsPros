@@ -26,9 +26,9 @@ Be explicit about the techiques from the class that you will use. For example:
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
 - Will you use lazy evaluation approaches?
 --->
-Since the data we'll be using for will be retrieved from a JSON obuject, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
+Since the data we'll be using for will be retrieved from a JSON object, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
 
-some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require ccreating objects to represent different players and teams, thus the need for object orientation.
+some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require creating objects to represent different players and teams, thus the need for object orientation.
 We'll need to recursively call functions to 'cdr' through while process =ing data in different lists and/or ring buffers.
 <!---
 The idea here is to identify what ideas from the class you will use in carrying out your project. 
@@ -76,7 +76,7 @@ How will you know if you are successful?
 If we can successfully process each user's request from the given options and visualize the requested comparisons and/or make future predictions(this willbe implmented if there's enough time left when the main project is complete), while always processing the latest available data from the league's games, we shall have successfully completed out project.
 
 ## Architecture Diagram
-Upload the architecture diagram you made for your slide presentation to your repository, and include it in-line here.
+![Alt text](/ArchDiag.jpg?raw=true)
 
 Create several paragraphs of narrative to explain the pieces and how they interoperate.
 
