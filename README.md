@@ -18,23 +18,26 @@ Be explicit about the techiques from the class that you will use. For example:
 - Will you use recursion? How?
 - Will you use map/filter/reduce? How? 
 - Will you use object-orientation? How?
+<!---
 - Will you use functional approaches to processing your data? How?
 - Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
 - Will you use lazy evaluation approaches?
+--->
+Since the data we'll be using for will be retrieved from a JSON obuject, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
 
-We wil use data abstraction to present the procedures and different 
-
+some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require ccreating objects to represent different players and teams, thus the need for object orientation.
+We'll need to recursively call functions to 'cdr' through while process =ing data in different lists and/or ring buffers.
+<!---
 The idea here is to identify what ideas from the class you will use in carrying out your project. 
 
 **Your project will be graded, in part, by the extent to which you adopt approaches from the course into your implementation, _and_ your discussion about this.**
+--->
 
 ### External Technologies
 
 - Retrieve information or publish data to the web 
-- Interact with databases
-
-If your project will do anything in this category (not only the things listed above!), include this section and discuss.
+- Interact with databases 
 
 ### Data Sets or other Source Materials
 We shall use the National Basketball Associaiton's api to retrieve data from its database http://stats.nba.com. This data will be presented as json object which will be parsed, sorted and presented in forms of graphs. 
@@ -67,7 +70,9 @@ Will it be interactive? Can you show it working? This project involves a live de
 --->
 ### Evaluation of Results
 How will you know if you are successful? 
-If you include some kind of _quantitative analysis,_ that would be good.
+<!-- If you include some kind of _quantitative analysis,_ that would be good.--->
+
+If we can successfully process each user's request from the given options and visualize the requested comparisons and/or make future predictions(this willbe implmented if there's enough time left when the main project is complete), while always processing the latest available data from the league's games, we shall have successfully completed out project.
 
 ## Architecture Diagram
 Upload the architecture diagram you made for your slide presentation to your repository, and include it in-line here.
@@ -75,7 +80,7 @@ Upload the architecture diagram you made for your slide presentation to your rep
 Create several paragraphs of narrative to explain the pieces and how they interoperate.
 
 ## Schedule
-Explain how you will go from proposal to finished product. 
+<!---Explain how you will go from proposal to finished product. 
 
 There are three deliverable milestones to explicitly define, below.
 
@@ -84,21 +89,22 @@ The nature of deliverables depend on your project, but may include things like p
 You will be expected to turn in code, documentation, and data (as appropriate) at each of these stages.
 
 Write concrete steps for your schedule to move from concept to working system. 
-
+--->
 ### First Milestone (Sun Apr 9)
-Which portion of the work will be completed (and committed to Github) by this day? 
+The backed of the program should be done by this date. We should be able to process information retrieved from the database and pass it to drawing functions in processed-lists. This should also involve statistical evaluations if needed.
 
 ### Second Milestone (Sun Apr 16)
-Which portion of the work will be completed (and committed to Github) by this day?  
+By this date, we hope to have the visual part of the program completed. 
+We should have the user interface complete with all the available options that our program can handle. 
 
 ### Public Presentation (Mon Apr 24, Wed Apr 26, or Fri Apr 28 [your date to be determined later])
-What additionally will be completed before the public presentation?
+We hope that by this date we shall have a fuill functional program with both the visual and data processing parts of the program full implemented.
 
 ## Group Responsibilities
-Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
+<!--- Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable. --->
 
-Please use Github properly: each individual must make the edits to this file representing their own section of work.
-
+<!--- Please use Github properly: each individual must make the edits to this file representing their own section of work--->
+<!---
 **Additional instructions for teams of three:** 
 * Remember that you must have prior written permission to work in groups of three (specifically, an approved `FP3` team declaration submission).
 * The team must nominate a lead. This person is primarily responsible for code integration. This work may be shared, but the team lead has default responsibility.
@@ -106,12 +112,11 @@ Please use Github properly: each individual must make the edits to this file rep
 * Identify who is team lead.
 
 In the headings below, replace the silly names and GitHub handles with your actual ones.
+--->
+### Patrick Kyoyetera: @legend855
+I will implment the visual part of the program, handle drawing charts and plots. I will also handle the statistical analysis of the data that we shall be processing.
 
-### Susan Scheme @susanscheme
-will write the....
 
 ### Leonard Lambda @lennylambda
 will work on...
-
-### Frank Funktions @frankiefunk 
-Frank is team lead. Additionally, Frank will work on...   
+   
