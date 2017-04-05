@@ -33,14 +33,9 @@
 (define (getWinPercentage playerStats)
   (list-ref (car playerStats) 5))
                          
-;;(define nbaStats (string->url "http://stats.nba.com/stats/draftcombineplayeranthro/?SeasonYear=2016-17&LeagueID=00"))
-;;(retrieveData nbaStats)
-
-;;TO-DO Test and Build one more Call to API service that we will be begin using for 'analysis'.
-;;      This should be all we need to set up a basic 'hand-off' between PK and I to begin work on our individual pieces.
-;;         --Update: someStats is a working call w/ relevant data based on a playerID. We should start here.
-;;                   there are quite a few flags to set, so this call will require tweaking.
-
+;;TO-DO 
 ;;      Current state of code reflects nice base for configuring select boxes in a webserver instance of racket.
-;;      IF THERE IS TIME. We should configure a way to dump the initial testing response of the API to avoid having re-fetch data we haven't changed upon re-running.
+;;      Finished basic info retrieval and data caching. Talk to PK about how to utilize DataService.
+;;      Begin setting up UI to select teams and players. For now, we will default to one hard-code statistical run,
+;;      adding further choice comparisons for second milestone. 
 
