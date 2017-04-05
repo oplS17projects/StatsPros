@@ -17,17 +17,10 @@
                    (option "YYz"))))))
 |#
 
-(define allTeamsRequest (string->url "http://stats.nba.com/stats/commonTeamYears/?LeagueID=00"))
-(define response (retrieveData allTeamsRequest))
-(define allPlayersRequest (string->url "http://stats.nba.com/stats/commonAllPlayers/?Season=2016-17&IsOnlyCurrentSeason=1&LeagueID=00"))
-(define playerResponse (retrieveData allPlayersRequest))
 
-(define someStats (retrieveData (string->url "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Totals&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=201565&Outcome=&Location=&Month=1&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=0")))
-  
-(define responseHash (car (hash-ref response 'resultSets)))
-(define playerHash (car (hash-ref playerResponse 'resultSets)))
-(define listofTeams (hash-ref responseHash 'rowSet))
-(define listofPlayers (hash-ref playerHash 'rowSet))
+(define listofTeams (retrieveTeamsList))
+(define listofPlayers (retrievePlayersList))
+;(retrievePlayerStats "2544")
 
 
 ;;Search for a players entry in listofPlayers. IE "Rose, Derrick"
@@ -37,6 +30,8 @@
 (define (findPlayersOnTeam teamAbv listofPlayers)
   (filter (lambda (x) (equal? (list-ref x 10) teamAbv)) listofPlayers))
 
+(define (getWinPercentage playerStats)
+  (list-ref (car playerStats) 5))
                          
 ;;(define nbaStats (string->url "http://stats.nba.com/stats/draftcombineplayeranthro/?SeasonYear=2016-17&LeagueID=00"))
 ;;(retrieveData nbaStats)
