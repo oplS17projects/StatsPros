@@ -51,7 +51,7 @@
         (else
          (map vector lst1 lst2))))
 
-
+ 
 (plot (list (discrete-histogram (make-vector stats Harden)
                                 #:label "Harden stats"
                                 #:color 'red
@@ -61,10 +61,15 @@
                                 #:label "Isaiah stats"
                                 #:color 2
                                 #:line-color 2)))
+;; Uncomment last two to plot to file
+;; Format can't also be changed to 'pdf, 'svg, 'jpeg...
       ;#:out-file "Harden-Isaiah.png"
       ;#:out-kind 'png)
 
+
+
 (plot (discrete-histogram (make-vector (retrieveTeamAbrv) wins)))
+;; Uncomment next 2 lines to plot to file
       ;#:out-file "team-wins.png"
       ;#:out-kind 'png)
 
