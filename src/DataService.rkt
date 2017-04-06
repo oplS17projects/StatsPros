@@ -16,8 +16,8 @@ Caching of generated requests is now active! Inital loads are still slow, howeve
 ;;This inital hash is a capture response for default values all the way through the application.
 ;; IE w/o changing dropdowns, just clicking submit, submit, submit, etc. Makes devs happy to have a primed cache on boot :)
 (hash-set! statsCache (string-append
-       (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" (number->string 203145))
-       "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5") (read-line cacheIn))
+                       (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" (number->string 203145))
+                       "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5") (read-line cacheIn))
 (close-input-port cacheIn)
 
 (define (retrieveData url)
@@ -72,8 +72,8 @@ Caching of generated requests is now active! Inital loads are still slow, howeve
 (define (retrievePlayerStats id headers?)
   ;Build URL as string. Place id in correct queryParam 'PlayerID'.
   (define url (string-append
-       (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" id)
-       "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5"))
+               (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" id)
+               "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5"))
   ;;Have we seen this request before? if we have, return the cached response, else fetch data over the wire, then cache.
   (define response (hash-ref statsCache url (lambda ()                             
                                               (define in
