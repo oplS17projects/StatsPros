@@ -34,7 +34,10 @@ Otherwise DataService will request all fresh data from NBA API, which takes some
   (define in (get-pure-port (string->url "http://stats.nba.com/stats/commonTeamYears/?LeagueID=00")))
   (define response-string (port->string in))
   (close-input-port in)
-  (if (jsexpr? response-string) (parseResponse response-string) (error (string-append "Invalid query: " response-string)))) 
+  (if (jsexpr? response-string) (parseResponse response-string) (error (string-append "Invalid query: " response-string))))
+
+(define (retrieveTeamAbrv)
+  (filter (lambda(x) (not (eq? x `null))) (map (lambda(x) (list-ref x 4)) (retrieveTeamsList))))
 
 (define (retrievePlayersList)
   (if offlineMode (retrieveOfflinePlayers) (retrieveOnlinePlayers)))
@@ -50,6 +53,10 @@ Otherwise DataService will request all fresh data from NBA API, which takes some
   (define response-string (port->string in))
   (close-input-port in)
   (if (jsexpr? response-string) (parseResponse response-string) (error (string-append "Invalid query: " response-string))))
+
+;;Retreive list of player entries by team Abrv. IE "Cleveland" = "CLE"
+(define (findPlayersOnTeam teamAbv)
+  (map (lambda(x) (list-ref x 1)) (filter (lambda (x) (equal? (list-ref x 10) teamAbv)) (retrievePlayersList))))
 
 (define (retrievePlayerStats id)
   ;Build URL as string. Place id in correct queryParam 'PlayerID'.
@@ -71,4 +78,6 @@ Otherwise DataService will request all fresh data from NBA API, which takes some
 (provide retrieveData)
 (provide retrievePlayerStats)
 (provide retrieveTeamsList)
+(provide retrieveTeamAbrv)
 (provide retrievePlayersList)
+(provide findPlayersOnTeam)
