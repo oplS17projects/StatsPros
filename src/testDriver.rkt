@@ -3,6 +3,7 @@
 (require net/url)
 (require json)
 
+
 (require "DataService.rkt")
 
 (struct dropdownEntry (entry))
@@ -36,11 +37,61 @@
             (body (h1 "Please select Players: ")
                   (form ((action
                           ,(make-url playerDropDownHandler)))
+                        (div ,(extract-binding/single 'team1dropdown (request-bindings request)))
                         ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x))(findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))) "player1dropdown")
+                        (div ,(extract-binding/single 'team2dropdown (request-bindings request)))
                         ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x))(findPlayersOnTeam (extract-binding/single 'team2dropdown (request-bindings request)))) "player2dropdown")
-                        (input ((type "submit"))))
+                        (div (input ((type "submit")))))
                   ))))
   (define (playerDropDownHandler request)
+    (render-statsSelect-page request))
+  (send/suspend/dispatch response-generator))
+
+(define (render-statsSelect-page request)
+  (define player1 (extract-binding/single 'player1dropdown (request-bindings request)))
+  (define player2 (extract-binding/single 'player2dropdown (request-bindings request)))
+  (define player1stats (retrievePlayerStats (findPlayerId (findPlayerEntry player1)) #f))
+  (define player2stats (retrievePlayerStats (findPlayerId (findPlayerEntry player2)) #f))
+  (define headers (retrievePlayerStats (findPlayerId (findPlayerEntry player1)) #t))
+  
+  (define (response-generator make-url)
+    (response/xexpr
+     `(html (head (title "StatsPros"))
+            (body (h1 "Please select Statistic: ")
+                  (form ((action
+                          ,(make-url statsDropDownHandler)))
+                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) headers) "statsdropdown")
+                        (input ((type "submit"))))
+                  ))))
+  (define (statsDropDownHandler request)
+    (render-statsFinal-page headers player1stats player2stats player1 player2 request))
+  (send/suspend/dispatch response-generator))
+
+(define (render-statsFinal-page headers player1stats player2stats player1name player2name request)
+  (define header (extract-binding/single 'statsdropdown (request-bindings request)))
+  (define (zip lst1 lst2)
+    (foldr (lambda (e1 e2 acc) (cons (list e1 e2) acc))
+           '()
+           lst1
+           lst2))
+  (define p1 (zip headers (car player1stats)))
+  (define p2 (zip headers (car player2stats)))
+  (define stat1 (filter (lambda (x) (equal? (car x) header)) p1))
+  (define stat2 (filter (lambda (x) (equal? (car x) header)) p2))
+  
+  (define (response-generator make-url)
+    (response/xexpr
+     `(html (head (title "StatsPros"))
+            (body (h1 "Results: ")
+                  (p ,(string-append (string-append (string-append (string-append player1name " - ") (car (car stat1))) " - ") (number->string (car (cdr (car stat1))))))
+                  (p ,(string-append (string-append (string-append (string-append player2name " - ") (car (car stat2))) " - ") (number->string (car (cdr (car stat2))))))
+                  (form 
+                   ((action
+                    ,(make-url returnHomeHandler)))
+                   (input ((value "Reset")
+                           (type "submit")))))
+            )))
+  (define (returnHomeHandler request)
     (render-StatsPros-page selectTeam request))
   (send/suspend/dispatch response-generator))
 
@@ -54,11 +105,6 @@
 
 (define (parse-dropdownEntry bindings)
   (dropdownEntry (extract-binding/single 'entry bindings)))
-
-;;Search for a players entry in listofPlayers. IE "Rose, Derrick"
-(define (findPlayerEntry2 name listofPlayers)
-  (filter (lambda (x) (equal? (list-ref x 1) name)) listofPlayers))
-
 
 (define (getWinPercentage playerStats)
   (list-ref (car playerStats) 5))
