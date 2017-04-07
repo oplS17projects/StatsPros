@@ -10,6 +10,7 @@ For dev purposes leave this set to #t.
 Otherwise DataService will request all fresh data from NBA API, which takes some time.
 Caching of generated requests is now active! Inital loads are still slow, however. Smh.
 |#
+
 (define offlineMode #t)
 (define cacheIn (open-input-file "fakeStats"))
 (define statsCache (make-hash '()))
