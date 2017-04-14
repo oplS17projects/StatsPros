@@ -10,7 +10,8 @@
 (struct dropdownEntry (entry))
 
 (define selectTeam
-  (map (lambda(x) (dropdownEntry x)) (retrieveTeamAbrv)))
+  (map (lambda(x) (dropdownEntry x)) (sort (retrieveTeamAbrv) string<?)))
+
 (define selectPlayer
   (list (dropdownEntry "")))
 
