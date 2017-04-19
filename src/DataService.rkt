@@ -67,8 +67,8 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux")
-                                         (team_abbrv . "BOS")))
+                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                         ))
                                       #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
   (string->jsexpr (port->string in)))
@@ -82,11 +82,14 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux")
+                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
                                          ))
                                          #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
   (string->jsexpr (port->string in)))
+
+(define (findPlayerId name)
+  (hash-ref (car (findPlayerEntry name)) 'player_id))
   
 ;;Retreive list of player entries by team Abrv. IE "Cleveland" = "CLE"
 (define (findPlayersOnTeam teamAbv)
@@ -94,20 +97,17 @@
 
 ;;Retrieve full player entry by name. IE "Derrick Rose"
 (define (findPlayerEntry name)
-  (filter (lambda (x) (equal? (list-ref x 1) name)) (retrievePlayersList)))
-(define (findPlayerId playerEntry)
-  (number->string (car (car playerEntry))))
+  (filter (lambda (x) (equal? (hash-ref x 'player_name) name)) (retrievePlayersList)))
 
 (define (retrievePlayerStats id)
+  (define data (list (cons 'api_key "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                      (cons 'player_id (number->string id))
+                      (cons 'season "2015")))
   (define-values (status headers in) (http-conn-sendrecv!
                                       (http-conn-open "api.probasketballapi.com" #:ssl? #f) "/boxscore/player"
                                       #:method 'POST
-                                      #:data 
-                                      (alist->form-urlencoded 
-                                       '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux")
-                                         (player_id . "708")))
-                                         #:headers 
-                                      '("Content-Type: application/x-www-form-urlencoded")))
+                                      #:data (alist->form-urlencoded data)
+                                      #:headers '("Content-Type: application/x-www-form-urlencoded")))
   (string->jsexpr (port->string in)))
 
 (define (parseResponse responseString)
@@ -118,13 +118,13 @@
 ;(retrievePlayerStats (findPlayerId (findPlayerEntry "Rose, Derrick")) #f)
 
 ;(provide retrieveData)
-;(provide retrievePlayerStats)
+(provide retrievePlayerStats)
 (provide retrieveTeamsList)
 (provide retrieveTeamAbrv)
-;(provide retrievePlayersList)
+(provide retrievePlayersList)
 (provide findPlayersOnTeam)
-;(provide findPlayerEntry)
-;(provide findPlayerId)
+(provide findPlayerEntry)
+(provide findPlayerId)
 
 #|
 Only saving this temporarily because it has the hard coded URL's we use to ping the API. Took somework developing these,
