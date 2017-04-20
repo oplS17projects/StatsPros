@@ -2,13 +2,49 @@
 #lang racket
 
 (require net/url)
+
+(require net/uri-codec)
+(require net/url-connect)
+(require net/http-client)
 (require json)
 (require racket/list)
 
 ;;Prime the cache with the previous state. Useful for development speed and testing purposes, when data accuracy isn't imperative.
-(define hashStream (open-input-file "hashStore"))
-(define statsCache (read hashStream))
-(close-input-port hashStream)
+;(define hashStream (open-input-file "hashStore"))
+;(define statsCache (read hashStream))
+;(close-input-port hashStream)
+
+(define statsCache (make-hash '()))
+(define tempCache (make-hash '()))
+
+(define (newAPI)
+  (define in (get-pure-port (string->url "https://erikberg.com/nba/teams.json")
+                            (list "Authorization: Bearer 97bf8315-06f2-487b-940e-7e5e0f3cac92")))
+  (define response (port->string in))
+  (close-input-port in)
+  (string->jsexpr response))
+
+(define (newAPIRoster teamAbv)
+  (define in
+    (get-pure-port
+     (string->url
+      (string-append (string-append "https://erikberg.com/nba/roster/" (hash-ref (car (filter (lambda (x) (equal? (hash-ref x 'abbreviation) teamAbv)) (newAPI))) 'team_id)) ".json"))
+      (list "Authorization: Bearer 97bf8315-06f2-487b-940e-7e5e0f3cac92")))
+  (define response (port->string in))
+  (close-input-port in)
+  (string->jsexpr response))
+
+;(define (newAPI2)
+  ;(define in (post-pure-port (string->url (string-append "https://probasketballapi.com/teams" (alist->form-urlencoded '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux") (team_abbrv . "BOS"))))))
+;                             (string->bytes/utf-8 "Content-Type: application/x-www-form-urlencoded"))
+ ; (define response (port->string in))
+;  (close-input-port in)
+;  (define f (open-output-file "resp.html" #:exists 'replace))
+;  (display response f)
+;  (close-output-port f))
+
+;(current-https-protocol "https")
+
 
 (define (retrieveData url)
   ;;Have we seen this request before? if we have, return the cached response, else fetch data over the wire, then cache.
@@ -20,39 +56,59 @@
                                               (define response-string (port->string in))
                                               (close-input-port in)
                                               (hash-set! statsCache url response-string)
-                                              (write-to-file statsCache "hashStore" #:mode 'binary #:exists 'replace)
+                                              (write-to-file statsCache "hashStore2" #:mode 'binary #:exists 'replace)
                                               response-string)))
   (if (jsexpr? response) response (error (string-append "Invalid query: " response))))
 
+  
 (define (retrieveTeamsList)
-  (parseResponse (retrieveData "http://stats.nba.com/stats/commonTeamYears/?LeagueID=00")))
-
+  (define-values (status headers in) (http-conn-sendrecv!
+                                      (http-conn-open "probasketballapi.com" #:ssl? #t) "/teams"
+                                      #:method 'POST
+                                      #:data 
+                                      (alist->form-urlencoded 
+                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                         ))
+                                      #:headers 
+                                      '("Content-Type: application/x-www-form-urlencoded")))
+  (string->jsexpr (port->string in)))
+  
 (define (retrieveTeamAbrv)
-  (filter (lambda(x) (not (eq? x `null))) (map (lambda(x) (list-ref x 4)) (retrieveTeamsList))))
+  (map (lambda (x) (hash-ref x 'abbreviation)) (retrieveTeamsList)))
 
 (define (retrievePlayersList)
-  (parseResponse (retrieveData "http://stats.nba.com/stats/commonAllPlayers/?Season=2016-17&IsOnlyCurrentSeason=1&LeagueID=00")))
+  (define-values (status headers in) (http-conn-sendrecv!
+                                      (http-conn-open "probasketballapi.com" #:ssl? #t) "/players"
+                                      #:method 'POST
+                                      #:data 
+                                      (alist->form-urlencoded 
+                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                         ))
+                                         #:headers 
+                                      '("Content-Type: application/x-www-form-urlencoded")))
+  (string->jsexpr (port->string in)))
+
+(define (findPlayerId name)
+  (hash-ref (car (findPlayerEntry name)) 'player_id))
   
 ;;Retreive list of player entries by team Abrv. IE "Cleveland" = "CLE"
 (define (findPlayersOnTeam teamAbv)
-  (map (lambda(x) (list-ref x 1)) (filter (lambda (x) (equal? (list-ref x 10) teamAbv)) (retrievePlayersList))))
+  (map (lambda (x) (hash-ref x 'display_name)) (hash-ref (newAPIRoster teamAbv) 'players)))
 
-;;Retrieve full player entry by name. IE "Rose, Derrick"
+;;Retrieve full player entry by name. IE "Derrick Rose"
 (define (findPlayerEntry name)
-  (filter (lambda (x) (equal? (list-ref x 1) name)) (retrievePlayersList)))
-(define (findPlayerId playerEntry)
-  (number->string (car (car playerEntry))))
+  (filter (lambda (x) (equal? (hash-ref x 'player_name) name)) (retrievePlayersList)))
 
-(define (retrievePlayerStats id headers?)
-  ;Build URL as string. Place id in correct queryParam 'PlayerID'.
-  (define url (string-append
-               (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" id)
-               "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5"))
-  
-  (define response (retrieveData url))
-  (if (jsexpr? response)
-      (if headers? (parseHeaders response) (parseResponse response))
-      (error (string-append "Invalid Query: " response))))
+(define (retrievePlayerStats id)
+  (define data (list (cons 'api_key "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                      (cons 'player_id (number->string id))
+                      (cons 'season "2015")))
+  (define-values (status headers in) (http-conn-sendrecv!
+                                      (http-conn-open "api.probasketballapi.com" #:ssl? #f) "/boxscore/player"
+                                      #:method 'POST
+                                      #:data (alist->form-urlencoded data)
+                                      #:headers '("Content-Type: application/x-www-form-urlencoded")))
+  (string->jsexpr (port->string in)))
 
 (define (parseResponse responseString)
   (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'rowSet))
@@ -61,7 +117,7 @@
 
 ;(retrievePlayerStats (findPlayerId (findPlayerEntry "Rose, Derrick")) #f)
 
-(provide retrieveData)
+;(provide retrieveData)
 (provide retrievePlayerStats)
 (provide retrieveTeamsList)
 (provide retrieveTeamAbrv)

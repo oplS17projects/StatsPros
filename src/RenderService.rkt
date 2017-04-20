@@ -8,12 +8,11 @@
             error "Unequal list sizes")
         (else (map vector lst1 lst2))))
 
-(define stats-names (cddr
-                     (retrievePlayerStats
-                      (findPlayerId
-                       (findPlayerEntry "Durant, Kevin")) #f)))
+(define KDHash (car (retrievePlayerStats (findPlayerId "Kevin Durant"))))
 
-(define stats-name (remove (car stats-names) stats-names))
+(define stats-names (hash-keys KDHash))
+
+;(define stats-name (remove (car stats-names) stats-names))
 
 
 
@@ -31,3 +30,9 @@
 
 (provide make-stats-string)
 (provide stats-names)
+
+
+;;To pass around file names create mapping of statistic to filename.
+;(define filename (number->string (gensym)))
+;(saveOutputFile oiwfdj filename)
+;(list-append statName filename)
