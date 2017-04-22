@@ -10,7 +10,11 @@
 (struct dropdownEntry (entry))
 
 (define selectTeam
-  (map (lambda(x) (dropdownEntry x)) (retrieveTeamAbrv)))
+  (map (lambda(x) (dropdownEntry x)) (sort (retrieveTeamAbrv) string<?)))
+
+(define (makeDropdownEntries list)
+  (map (lambda(x) (dropdownEntry (symbol->string x))) list))
+
 (define selectPlayer
   (list (dropdownEntry "")))
 
@@ -51,42 +55,34 @@
 (define (render-statsSelect-page request)
   (define player1 (extract-binding/single 'player1dropdown (request-bindings request)))
   (define player2 (extract-binding/single 'player2dropdown (request-bindings request)))
-  (define player1stats (retrievePlayerStats (findPlayerId (findPlayerEntry player1)) #f))
-  (define player2stats (retrievePlayerStats (findPlayerId (findPlayerEntry player2)) #f))
-  (define headers (retrievePlayerStats (findPlayerId (findPlayerEntry player1)) #t))
-  
+  (define player1stats (retrievePlayerStats (findPlayerId player1)))
+  (define player2stats (retrievePlayerStats (findPlayerId player2)))
+
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros"))
             (body (h1 "Please select Statistic: ")
                   (form ((action
                           ,(make-url statsDropDownHandler)))
-                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) headers) "statsdropdown")
+                        ,(render-dropdownEntrys (makeDropdownEntries (hash-keys (car player1stats))) "statsdropdown")
                         (input ((type "submit"))))
                   ))))
   (define (statsDropDownHandler request)
-    (render-statsFinal-page headers player1stats player2stats player1 player2 request))
+    (render-statsFinal-page player1stats player2stats player1 player2 request))
   (send/suspend/dispatch response-generator))
 
-(define (render-statsFinal-page headers player1stats player2stats player1name player2name request)
-  (define header (extract-binding/single 'statsdropdown (request-bindings request)))
-  (define (zip lst1 lst2)
-    (foldr (lambda (e1 e2 acc) (cons (list e1 e2) acc))
-           '()
-           lst1
-           lst2))
-  (define p1 (zip headers (car player1stats)))
-  (define p2 (zip headers (car player2stats)))
-  (define stat1 (filter (lambda (x) (equal? (car x) header)) p1))
-  (define stat2 (filter (lambda (x) (equal? (car x) header)) p2))
+(define (render-statsFinal-page player1stats player2stats player1name player2name request)
+  (define statistic (extract-binding/single 'statsdropdown (request-bindings request)))
+  (define stat1 (hash-ref (car player1stats) (string->symbol statistic)))
+  (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
   
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros"))
             (body (h1 "Results: ")
                   (img ((src "/team-wins.png")))
-                  (p ,(string-append (string-append (string-append (string-append player1name " - ") (car (car stat1))) " - ") (number->string (car (cdr (car stat1))))))
-                  (p ,(string-append (string-append (string-append (string-append player2name " - ") (car (car stat2))) " - ") (number->string (car (cdr (car stat2))))))
+                  (p ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (number->string stat1)))
+                  (p ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (number->string stat2)))
                   (form 
                    ((action
                     ,(make-url returnHomeHandler)))

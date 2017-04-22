@@ -18,23 +18,20 @@
 ;(define Isaiah (remove "2015-16" (cddr (car (retrievePlayerStats (findPlayerId (findPlayerEntry "Thomas, Isaiah")) #f)))) )
 
  
-(define Isaiah (make-stats-string "Thomas, Isaiah"))
+;(plot (list (discrete-histogram (make-vector stats player))))
+(define plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
 
-;(define Harden (remove "2015-16" (cddr (car (retrievePlayerStats (findPlayerId (findPlayerEntry "Harden, James")) #f)))))
-; (remove* '2015-16 Isaiah)
 
-(define harden (make-stats-string "Harden, James"))
- 
 (parameterize ([plot-width    3000]
                  [plot-height   600])
     (plot (list (discrete-histogram
-                 (make-vector stats-name Isaiah)
+                 (make-vector (accumulate-stat "Isaiah Thomas"))
                  #:skip 2.5
                  #:x-min 0
                  #:color 6
                  #:label "Isaiah")
                 (discrete-histogram
-                 (make-vector stats-name Harden)
+                 (make-vector (accumulate-stat "James Harden"))
                  #:skip 2.5
                  #:x-min 1
                  #:color 2
@@ -42,6 +39,6 @@
           #:x-label "Statistics"
           #:y-label "Values"
           #:title "Harden vs Isaiah"
-          #:out-file "new.png"))
+          #:out-file "Harden-Isaiah.png"))
 
 ;(define plotter )

@@ -22,8 +22,8 @@
             error "Unequal list sizes")
         (else (map vector lst1 lst2))))
 
-(define (make-vector player-name stats-list)
-  (make-stats player-name))
+(define (make-vector player-list)
+  (map-vector list-of-plottable-stats player-list))
 
 ;;  
 (define (make-stats player)
@@ -82,16 +82,16 @@
            (else
             (accumulate-helper
              (cdr plott)
-             (cons accumulated-stats (list-avg
-                                      (extract-stat-value
-                                       player-hash
-                                       (car plott)) ))))))
+             (cons  (list-avg (extract-stat-value
+                               player-hash
+                               (car plott)))
+                    accumulated-stats)))))
    (accumulate-helper list-of-plottable-stats '()))
 ;; after getting the player's hash, map it over plottable stats
 ;; and return season avg of these stats
 
-;(provide stats-names)
-
+(provide accumulate-stat)
+(provide make-vector)
 
 ;;To pass around file names create mapping of statistic to filename.
 ;(define filename (number->string (gensym)))
