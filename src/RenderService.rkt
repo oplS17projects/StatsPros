@@ -13,8 +13,12 @@
 
 
 ;; Plotable statistics:  to, pf, fgm, fga, fg3m, fg3a, ftm,
-;;                       fta, oreb, dreb, ast, blk, stl, pts, 
+;;                       fta, oreb, dreb, ast, blk, stl, pts,
+;; Omitted steals bc they're presented as a string and I didn't bother to
+;; implement switching them 
 
+
+;; All the numerical stats in a player's hash
 (define list-of-plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
 
 (define (map-vector lst1 lst2)
@@ -22,10 +26,13 @@
             error "Unequal list sizes")
         (else (map vector lst1 lst2))))
 
+(define (sym-vector sym1 sym2)
+  (map vector sym1 sym2))
+
 (define (make-vector player-list)
   (map-vector list-of-plottable-stats player-list))
 
-;;  
+;; retrieves a player's stats in a list of hashmaps
 (define (make-stats player)
   (retrievePlayerStats (findPlayerId player)))
 
@@ -68,14 +75,14 @@
   (extract-helper hash-list '()))
 
 
-;; go through hash, match keys with plottable stats, retrieve value into a list, plot
+;; turn a hash map into a list, probably easier to deal with 
 (define (stats-to-list player-hash)
   (cond ((hash-empty? player-hash) '())
         (else
          (hash->list player-hash))))
 
 ;; generate a player's stat list 
-(define (accumulate-stat player-name)
+(define (accumulate-stats player-name)
   (define player-hash (make-stats player-name))
    (define (accumulate-helper plott accumulated-stats)
      (cond ((null? plott) accumulated-stats)
@@ -87,11 +94,23 @@
                                (car plott)))
                     accumulated-stats)))))
    (accumulate-helper list-of-plottable-stats '()))
-;; after getting the player's hash, map it over plottable stats
-;; and return season avg of these stats
 
-(provide accumulate-stat)
+;; generate a list of one single stat
+(define accumulate-single-stat
+  (λ (player-name stat-label)
+    (define player-hash (make-stats player-name))
+    (list-avg (extract-stat-value player-hash stat-label))))
+
+;(define (accumulate-single-stat player-name)
+;  (define player-hash (make-stats player-name))
+;  (define ()))
+
+;; after getting the player's hash, map it over plottable stats and return 
+;; season avg of these stats then pass to plot to make you a sweet chart
+(provide accumulate-single-stat)
+(provide accumulate-stats)
 (provide make-vector)
+(provide sym-vector)
 
 ;;To pass around file names create mapping of statistic to filename.
 ;(define filename (number->string (gensym)))
