@@ -72,9 +72,11 @@
   (send/suspend/dispatch response-generator))
 
 (define (render-statsFinal-page player1stats player2stats player1name player2name request)
-  (define statistic (extract-binding/single 'statsdropdown (request-bindings request)))
+  ;START HERE
+  (define statistic (extract-binding/single 'statsdropdown (request-bindings request))) ;Extracts value of whatever element is named "statsdropdown"
   (define stat1 (hash-ref (car player1stats) (string->symbol statistic)))
   (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
+  (calldrawstuff name1 name2)
   
   (define (response-generator make-url)
     (response/xexpr
