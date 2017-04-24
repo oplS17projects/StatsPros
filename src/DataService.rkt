@@ -34,8 +34,6 @@
   (close-input-port in)
   (string->jsexpr response))
 
-
-
 ;(define (newAPI2)
   ;(define in (post-pure-port (string->url (string-append "https://probasketballapi.com/teams" (alist->form-urlencoded '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux") (team_abbrv . "BOS"))))))
 ;                             (string->bytes/utf-8 "Content-Type: application/x-www-form-urlencoded"))

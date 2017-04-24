@@ -26,6 +26,7 @@
             error "Unequal list sizes")
         (else (map vector lst1 lst2))))
 
+
 (define (sym-vector sym1 sym2)
   (map vector sym1 sym2))
 
@@ -38,9 +39,6 @@
 
 (define KDHash-list (make-stats "Kevin Durant"))
 (define KDHash (car KDHash-list))
-
-;; list of all the available statistics in the hash
-(define stats-list (hash-keys KDHash))
 
 ;; accumulate sum of stats list
 (define (sum-list lst)
@@ -111,6 +109,11 @@
 (provide accumulate-stats)
 (provide make-vector)
 (provide sym-vector)
+
+
+(provide make-stats-string)
+(provide stats-names)
+
 
 ;;To pass around file names create mapping of statistic to filename.
 ;(define filename (number->string (gensym)))
