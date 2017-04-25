@@ -1,7 +1,6 @@
 #lang racket
 
 (require net/url)
-
 (require net/uri-codec)
 (require net/url-connect)
 (require net/http-client)
@@ -22,7 +21,7 @@
   (define in
     (get-pure-port
      (string->url
-      (string-append (string-append "https://erikberg.com/nba/roster/" (hash-ref (car (filter (lambda (x) (equal? (hash-ref x 'abbreviation) teamAbv)) (newAPI))) 'team_id)) ".json"))
+      (string-append (string-append "https://erikberg.com/nba/roster/" (hash-ref (car (filter (lambda (x) (equal? (hash-ref x 'last_name) teamAbv)) (newAPI))) 'team_id)) ".json"))
       (list "Authorization: Bearer 97bf8315-06f2-487b-940e-7e5e0f3cac92")))
   (define response (port->string in))
   (close-input-port in)
@@ -61,14 +60,15 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                       '((api_key . "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                                          ))
                                       #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
   (string->jsexpr (port->string in)))
+
   
 (define (retrieveTeamAbrv)
-  (map (lambda (x) (hash-ref x 'abbreviation)) (retrieveTeamsList)))
+  (map (lambda (x) (hash-ref x 'team_name)) (retrieveTeamsList)))
 
 (define (retrievePlayersList)
   (define-values (status headers in) (http-conn-sendrecv!
@@ -76,7 +76,7 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                       '((api_key . "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                                          ))
                                          #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
@@ -94,7 +94,7 @@
   (filter (lambda (x) (equal? (hash-ref x 'player_name) name)) (retrievePlayersList)))
 
 (define (retrievePlayerStats id)
-  (define data (list (cons 'api_key "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+  (define data (list (cons 'api_key "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                       (cons 'player_id (number->string id))
                       (cons 'season "2015")))
   (define-values (status headers in) (http-conn-sendrecv!
@@ -109,7 +109,6 @@
 (define (parseHeaders responseString)
   (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'headers))
 
-;(provide retrieveData)
 (provide retrievePlayerStats)
 (provide retrieveTeamsList)
 (provide retrieveTeamAbrv)
