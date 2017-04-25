@@ -1,16 +1,14 @@
 #lang racket
 
-
 (require plot)
 (require "RenderService.rkt")
-
-(define vs "vs")
 
 ;; this plots all the available stat values for a two players
 (define draw-main-plot
   (λ (currentDirectory player1 player2)
     (define filePath (string-append (symbol->string (gensym)) ".png"))
-    (define imgPath (string-replace (string-append (path->string currentDirectory) filePath) "htdocs/" ""))
+    (define imgPath (string-append (path->string currentDirectory) filePath))
+
     (parameterize ([plot-width    3000]
                    [plot-height   600])
       (plot-file (list (discrete-histogram
@@ -28,7 +26,7 @@
                  imgPath
             #:x-label "Statistics"
             #:y-label "Values"
-            #:title (string-join (list player1 vs player2))))
+            #:title (string-join (list player1 "vs" player2))))
     (string-append "/" filePath)))
 
 

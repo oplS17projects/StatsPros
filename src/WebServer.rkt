@@ -1,13 +1,16 @@
 #lang racket
 
+(require racket/runtime-path)
 (require net/url)
 (require json)
-(require web-server/servlet
-         web-server/servlet-env)
+(require web-server/servlet)
+(provide/contract (start (request? . -> . response?)))
+
 
 (require "DataService.rkt")
 (require "testdraw.rkt")
 
+(define-runtime-path htdocs "htdocs")
 (struct dropdownEntry (entry))
 
 (define selectTeam
@@ -113,8 +116,7 @@
 (define (parse-dropdownEntry bindings)
   (dropdownEntry (extract-binding/single 'entry bindings)))
 
-
+(require web-server/servlet-env)
 (serve/servlet start
                #:servlet-regexp #rx".*\\.rkt"
-               #:server-root-path (current-directory)
-               #:extra-files-paths (list (current-directory)))
+               #:extra-files-paths (list (build-path (current-directory) "htdocs")))
