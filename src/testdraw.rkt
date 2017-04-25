@@ -27,7 +27,7 @@
             #:x-label "Statistics"
             #:y-label "Values"
             #:title (string-join (list player1 vs player2))
-            #:out-file (string-join (list player1 vs player2))
+            #:out-file (string-join (list player1 vs player2 ".png"))
             #:out-kind 'png))))
 
 
