@@ -8,11 +8,13 @@
 
 ;; this plots all the available stat values for a two players
 (define draw-main-plot
-  (λ (player1 player2)
+  (λ (currentDirectory player1 player2)
+    (define filePath (string-append (symbol->string (gensym)) ".png"))
+    (define imgPath (string-replace (string-append (path->string currentDirectory) filePath) "htdocs/" ""))
+    (print imgPath)
     (parameterize ([plot-width    3000]
                    [plot-height   600])
-      (plot-new-window? #t)
-      (plot (list (discrete-histogram
+      (plot-file (list (discrete-histogram
                    (make-vector (accumulate-stats player1))
                    #:skip 2.5
                    #:x-min 0
@@ -24,11 +26,11 @@
                    #:x-min 1
                    #:color 45
                    #:label player2))
+                 imgPath
             #:x-label "Statistics"
             #:y-label "Values"
-            #:title (string-join (list player1 vs player2))
-            #:out-file (string-join (list player1 vs player2))
-            #:out-kind 'png))))
+            #:title (string-join (list player1 vs player2))))
+    (string-append "/" filePath)))
 
 
 
@@ -56,7 +58,4 @@
                 #:y-label "Value")))
   
 ;; (plot (list (discrete-histogram )))
-
-
-
-
+(provide draw-main-plot)

@@ -6,6 +6,7 @@
          web-server/servlet-env)
 
 (require "DataService.rkt")
+(require "testdraw.rkt")
 
 (struct dropdownEntry (entry))
 
@@ -57,7 +58,7 @@
   (define player2 (extract-binding/single 'player2dropdown (request-bindings request)))
   (define player1stats (retrievePlayerStats (findPlayerId player1)))
   (define player2stats (retrievePlayerStats (findPlayerId player2)))
-
+  
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros"))
@@ -72,17 +73,16 @@
   (send/suspend/dispatch response-generator))
 
 (define (render-statsFinal-page player1stats player2stats player1name player2name request)
-  ;START HERE
-  (define statistic (extract-binding/single 'statsdropdown (request-bindings request))) ;Extracts value of whatever element is named "statsdropdown"
+  (define statistic (extract-binding/single 'statsdropdown (request-bindings request)))
   (define stat1 (hash-ref (car player1stats) (string->symbol statistic)))
   (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
-  (calldrawstuff name1 name2)
-  
+  (define imgPath (draw-main-plot (current-directory) player1name player2name))
+    
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros"))
             (body (h1 "Results: ")
-                  (img ((src "/team-wins.png")))
+                  (img ((src ,imgPath)))
                   (p ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (number->string stat1)))
                   (p ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (number->string stat2)))
                   (form 
@@ -110,10 +110,3 @@
                #:servlet-regexp #rx".*\\.rkt"
                #:server-root-path (current-directory)
                #:extra-files-paths (list (current-directory)))
-                         
-;;TO-DO 
-;; Caching for all requests now in place!
-;; Cache now writes itself to file in the src directory any-time it is updated, and self primes on server start. Cool Beans!
-;; Also, figured out the img issue. should be smoof sailing from here PK!
-;; Next-up - Need to collaborate on a way to dynamically build the graph imgs based on what the user has input. Nearly ready for first release!!!
-

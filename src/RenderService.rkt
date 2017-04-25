@@ -110,11 +110,6 @@
 (provide make-vector)
 (provide sym-vector)
 
-
-(provide make-stats-string)
-(provide stats-names)
-
-
 ;;To pass around file names create mapping of statistic to filename.
 ;(define filename (number->string (gensym)))
 ;(saveOutputFile oiwfdj filename)
