@@ -4,44 +4,59 @@
 (require plot)
 (require "RenderService.rkt")
 
-; (parameterize ([plot-width    150]
-;                  [plot-height   150]
-;                  [plot-x-label  #f]
-;                  [plot-y-label  #f])
-;     (define xs (build-list 20 (λ _ (random))))
-;     (define ys (build-list 20 (λ _ (random))))
-;     (list (plot (points (map vector xs ys)))
-;           (plot (points (map vector xs ys)
-;                         #:x-min 0 #:x-max 1
-;                         #:y-min 0 #:y-max 1))))
+(define vs "vs")
 
-;(define Isaiah (remove "2015-16" (cddr (car (retrievePlayerStats (findPlayerId (findPlayerEntry "Thomas, Isaiah")) #f)))) )
+;; this plots all the available stat values for a two players
+(define draw-main-plot
+  (λ (player1 player2)
+    (parameterize ([plot-width    3000]
+                   [plot-height   600])
+      (plot-new-window? #t)
+      (plot (list (discrete-histogram
+                   (make-vector (accumulate-stats player1))
+                   #:skip 2.5
+                   #:x-min 0
+                   #:color 67
+                   #:label player1)
+                  (discrete-histogram
+                   (make-vector (accumulate-stats player2))
+                   #:skip 2.5
+                   #:x-min 1
+                   #:color 45
+                   #:label player2))
+            #:x-label "Statistics"
+            #:y-label "Values"
+            #:title (string-join (list player1 vs player2))
+            #:out-file (string-join (list player1 vs player2))
+            #:out-kind 'png))))
 
- 
-(define Isaiah (make-stats-string "Thomas, Isaiah"))
 
-;(define Harden (remove "2015-16" (cddr (car (retrievePlayerStats (findPlayerId (findPlayerEntry "Harden, James")) #f)))))
-; (remove* '2015-16 Isaiah)
 
-(define harden (make-stats-string "Harden, James"))
- 
-(parameterize ([plot-width    3000]
-                 [plot-height   600])
+;; should use player ids to pass around images to the web server
+
+
+(define plot-single-stat
+  (λ (player1 player2  stat-label)
+    (plot-new-window? #t)
     (plot (list (discrete-histogram
-                 (make-vector stats-name Isaiah)
+                 (sym-vector stat-label
+                              (accumulate-single-stat player1 stat-label))
                  #:skip 2.5
                  #:x-min 0
-                 #:color 6
-                 #:label "Isaiah")
+                 #:color 43
+                 #:label player1)
                 (discrete-histogram
-                 (make-vector stats-name Harden)
+                 (sym-vector stat-label
+                             (accumulate-single-stat player2 stat-label))
                  #:skip 2.5
                  #:x-min 1
-                 #:color 2
-                 #:label "harden"))
-          #:x-label "Statistics"
-          #:y-label "Values"
-          #:title "Harden vs Isaiah"
-          #:out-file "new.png"))
+                 #:color 89
+                 #:label player2))
+                #:x-label (symbol->string stat-label)
+                #:y-label "Value")))
+  
+;; (plot (list (discrete-histogram )))
 
-;(define plotter )
+
+
+
