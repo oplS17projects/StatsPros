@@ -11,7 +11,6 @@
   (λ (currentDirectory player1 player2)
     (define filePath (string-append (symbol->string (gensym)) ".png"))
     (define imgPath (string-replace (string-append (path->string currentDirectory) filePath) "htdocs/" ""))
-    (print imgPath)
     (parameterize ([plot-width    3000]
                    [plot-height   600])
       (plot-file (list (discrete-histogram

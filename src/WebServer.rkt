@@ -19,6 +19,13 @@
 (define selectPlayer
   (list (dropdownEntry "")))
 
+(define availablePlayers (map (lambda (x) (hash-ref x 'player_name)) (retrievePlayersList)))
+
+(define (playerEntryExists? name)
+ (if (not (equal? (filter (lambda (x) (equal? x name)) availablePlayers) '()))
+     #t
+     #f))
+
 (define (start request)
   (render-StatsPros-page selectTeam request))
 
@@ -44,9 +51,9 @@
                   (form ((action
                           ,(make-url playerDropDownHandler)))
                         (div ,(extract-binding/single 'team1dropdown (request-bindings request)))
-                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x))(findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))) "player1dropdown")
+                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) (filter (lambda (x) (playerEntryExists? x)) (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request))))) "player1dropdown")
                         (div ,(extract-binding/single 'team2dropdown (request-bindings request)))
-                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x))(findPlayersOnTeam (extract-binding/single 'team2dropdown (request-bindings request)))) "player2dropdown")
+                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) (filter (lambda (x) (playerEntryExists? x)) (findPlayersOnTeam (extract-binding/single 'team2dropdown (request-bindings request))))) "player2dropdown")
                         (div (input ((type "submit")))))
                   ))))
   (define (playerDropDownHandler request)
@@ -83,8 +90,8 @@
      `(html (head (title "StatsPros"))
             (body (h1 "Results: ")
                   (img ((src ,imgPath)))
-                  (p ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (number->string stat1)))
-                  (p ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (number->string stat2)))
+                  (p ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (~v stat1)))
+                  (p ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (~v stat2)))
                   (form 
                    ((action
                     ,(make-url returnHomeHandler)))
@@ -105,6 +112,7 @@
 
 (define (parse-dropdownEntry bindings)
   (dropdownEntry (extract-binding/single 'entry bindings)))
+
 
 (serve/servlet start
                #:servlet-regexp #rx".*\\.rkt"
