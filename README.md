@@ -6,7 +6,7 @@ Analyzing and visualizing sports statistics
 ```
 raco exe --gui src/WebServer.rkt
 ```
-Once complete, you should find a WebServer.app(MacOS) inside the src directory.
+Once complete, you should find a WebServer.app(MacOS)/WebServer.exe(Windows)/WebServer(Linux) inside the src directory.
 Double click to run. Must be force killed from Activity Monitor I've noticed.
 ### Statement
 <!--- Describe your project. Why is it interesting? Why is it interesting to you personally? What do you hope to learn? --->

@@ -119,4 +119,5 @@
 (require web-server/servlet-env)
 (serve/servlet start
                #:servlet-regexp #rx".*\\.rkt"
+	       #:server-root-path (current-directory)
                #:extra-files-paths (list (build-path (current-directory) "htdocs")))
