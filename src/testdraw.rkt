@@ -5,12 +5,12 @@
 
 ;; this plots all the available stat values for a two players
 (define draw-main-plot
-  (λ (currentDirectory player1 player2)
+  (λ (currentDirectory player1 player2 browserWidth browserHeight)
     (define filePath (string-append (symbol->string (gensym)) ".png"))
     (define imgPath (string-append (path->string currentDirectory) filePath))
 
-    (parameterize ([plot-width    3000]
-                   [plot-height   600])
+    (parameterize ([plot-width    browserWidth]
+                   [plot-height   browserHeight])
       (plot-file (list (discrete-histogram
                    (make-vector (accumulate-stats player1))
                    #:skip 2.5
