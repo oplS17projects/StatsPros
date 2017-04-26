@@ -103,16 +103,19 @@
     
   (define (response-generator make-url)
     (response/xexpr
-     `(html (head (title "StatsPros"))
+     `(html (head (title "StatsPros")
+                  (link ((rel "stylesheet")
+                         (href "/statspros.css"))))
             (body (h1 "Results: ")
-                  (img ((src ,imgPath)))
-                  (p ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (~v stat1)))
-                  (p ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (~v stat2)))
-                  (form 
-                   ((action
-                    ,(make-url returnHomeHandler)))
+                  (img ((src ,imgPath)
+                        (class "graph")))
+                  (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (~v stat1)))
+                  (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (~v stat2)))
+
+                  (div ((class "results"))
+                       (form ((action ,(make-url returnHomeHandler)))
                    (input ((value "Reset")
-                           (type "submit")))))
+                           (type "submit"))))))
             )))
   (define (returnHomeHandler request)
     (render-StatsPros-page selectTeam request))

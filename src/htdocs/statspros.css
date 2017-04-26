@@ -1,0 +1,17 @@
+IMG.graph {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+p.resultsText {
+    text-align: center
+}
+div.results {
+    display:block;
+    text-align: center;
+}
+div.results.form {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
