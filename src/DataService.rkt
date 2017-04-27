@@ -1,18 +1,11 @@
-
 #lang racket
 
 (require net/url)
-
 (require net/uri-codec)
 (require net/url-connect)
 (require net/http-client)
 (require json)
 (require racket/list)
-
-;;Prime the cache with the previous state. Useful for development speed and testing purposes, when data accuracy isn't imperative.
-;(define hashStream (open-input-file "hashStore"))
-;(define statsCache (read hashStream))
-;(close-input-port hashStream)
 
 (define statsCache (make-hash '()))
 (define tempCache (make-hash '()))
@@ -28,13 +21,11 @@
   (define in
     (get-pure-port
      (string->url
-      (string-append (string-append "https://erikberg.com/nba/roster/" (hash-ref (car (filter (lambda (x) (equal? (hash-ref x 'abbreviation) teamAbv)) (newAPI))) 'team_id)) ".json"))
+      (string-append (string-append "https://erikberg.com/nba/roster/" (hash-ref (car (filter (lambda (x) (equal? (hash-ref x 'last_name) teamAbv)) (newAPI))) 'team_id)) ".json"))
       (list "Authorization: Bearer 97bf8315-06f2-487b-940e-7e5e0f3cac92")))
   (define response (port->string in))
   (close-input-port in)
   (string->jsexpr response))
-
-
 
 ;(define (newAPI2)
   ;(define in (post-pure-port (string->url (string-append "https://probasketballapi.com/teams" (alist->form-urlencoded '((api_key . "IRaeWkrM1Sf8hHQDOoK7dFNTpBlzyXux") (team_abbrv . "BOS"))))))
@@ -69,14 +60,15 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                       '((api_key . "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                                          ))
                                       #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
   (string->jsexpr (port->string in)))
+
   
 (define (retrieveTeamAbrv)
-  (map (lambda (x) (hash-ref x 'abbreviation)) (retrieveTeamsList)))
+  (map (lambda (x) (hash-ref x 'team_name)) (retrieveTeamsList)))
 
 (define (retrievePlayersList)
   (define-values (status headers in) (http-conn-sendrecv!
@@ -84,7 +76,7 @@
                                       #:method 'POST
                                       #:data 
                                       (alist->form-urlencoded 
-                                       '((api_key . "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+                                       '((api_key . "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                                          ))
                                          #:headers 
                                       '("Content-Type: application/x-www-form-urlencoded")))
@@ -102,7 +94,7 @@
   (filter (lambda (x) (equal? (hash-ref x 'player_name) name)) (retrievePlayersList)))
 
 (define (retrievePlayerStats id)
-  (define data (list (cons 'api_key "5u40nyFIVdNcYBRLqGAiWkXbvCo6SEf9")
+  (define data (list (cons 'api_key "s60VetaRkDZSlynNHE1MLCxA3vQY8Oz7")
                       (cons 'player_id (number->string id))
                       (cons 'season "2015")))
   (define-values (status headers in) (http-conn-sendrecv!
@@ -117,9 +109,6 @@
 (define (parseHeaders responseString)
   (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'headers))
 
-;(retrievePlayerStats (findPlayerId (findPlayerEntry "Rose, Derrick")) #f)
-
-;(provide retrieveData)
 (provide retrievePlayerStats)
 (provide retrieveTeamsList)
 (provide retrieveTeamAbrv)
@@ -127,24 +116,3 @@
 (provide findPlayersOnTeam)
 (provide findPlayerEntry)
 (provide findPlayerId)
-
-#|
-Only saving this temporarily because it has the hard coded URL's we use to ping the API. Took somework developing these,
-so until we test the new caching mechanism to be dependable, i'd rather keep these somewhere to avoid repeating previous work, should things come to that.
-Just ignore for now. Nothing relevant/useful below this point.
-
-(define cacheIn (open-input-file "fakeStats"))
-(define statsCache (make-hash '()))
-;;This inital hash is a capture response for default values all the way through the application.
-;; IE w/o changing dropdowns, just clicking submit, submit, submit, etc. Makes devs happy to have a primed cache on boot :)
-(hash-set! statsCache (string-append
-                       (string-append "http://stats.nba.com/stats/playerdashboardbylastngames/?MeasureType=Base&PerMode=Per100Possessions&PlusMinus=Y&PaceAdjust=N&Rank=N&Season=2015-16&SeasonType=Regular Season&PlayerID=" (number->string 203145))
-                       "&Outcome=&Location=&Month=0&SeasonSegment=&DateFrom=&DateTo=&OpponentTeamID=0&VsConference=&VsDivision=&GameSegment=&Period=0&LastNGames=5") (read-line cacheIn))
-(close-input-port cacheIn)
-(define cacheInn (open-input-file "teamsListData"))
-(hash-set! statsCache "http://stats.nba.com/stats/commonTeamYears/?LeagueID=00" (read-line cacheInn))
-(close-input-port cacheInn)
-(define cacheInnn (open-input-file "playerListData"))
-(hash-set! statsCache "http://stats.nba.com/stats/commonAllPlayers/?Season=2016-17&IsOnlyCurrentSeason=1&LeagueID=00" (read-line cacheInnn))
-(close-input-port cacheInnn)
-|#

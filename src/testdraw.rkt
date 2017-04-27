@@ -8,6 +8,7 @@
   (λ (currentDirectory player1 player2 browserWidth browserHeight)
     (define filePath (string-append (symbol->string (gensym)) ".png"))
     (define imgPath (string-append (path->string currentDirectory) filePath))
+
     (parameterize ([plot-width    browserWidth]
                    [plot-height   browserHeight]) 
       (plot-file (list (discrete-histogram
@@ -16,6 +17,7 @@
                    #:x-min 0
                    #:color 67
                    #:label player1)
+
                        (discrete-histogram
                         (vector-list player2)
                         #:skip 2.5
@@ -27,6 +29,7 @@
                  #:y-label "Values"
                  #:title (string-join (list player1 "vs" player2))))
     (string-append "/" filePath)))
+
 
 
 ;; should use player ids to pass around images to the web server
