@@ -11,22 +11,19 @@ Double click to run. Must be force killed from Activity Monitor I've noticed.
 ### Statement
 <!--- Describe your project. Why is it interesting? Why is it interesting to you personally? What do you hope to learn? --->
 
-We're both interested in this project because we thought it'd be a perfect fit for our interests in sports and also mathematics. As a result we came up with this idea to visualize sports data in an interactive way. 
+We were both interested in this project because we thought it'd be a perfect fit for our interests in sports and mathematics. As a result we came up with this idea to visualize sports statistics in a visual and interactive way. 
 
-This project will require us to retrieve data from a database using an api and extract useful bits of information that we can use to draw graphs and/or charts to visualize statistical comparisons and also make predictions(\*).
+This project required data retrieval from the National Basketball Association's official database using an api and extracting useful data that we then used to draw graphs/charts to visualize statistical comparisons between individual pairs of players.
 
 
 ### Analysis
 Explain what approaches from class you will bring to bear on the project.
 
-Be explicit about the techiques from the class that you will use. For example:
+We used several approaches from class to accomplish the task at hand:
+1. Data Abstraction: When the call to draw graphs from the browser is made, the calling procedure need only know the names of the players whose statistics are to be compared. The multitude of procedures that process the player data, filter out the plottable numbers, statistic names and values, averaging out the numbers over the course of the entire season, and mapping statistic names over the values so we can  is not visible outside of the file plotting procedure which is called to plot charts.
+2. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
-- Will you use data abstraction? How?
-- Will you use recursion? How?
-- Will you use map/filter/reduce? Map should be useful in arranging our input JSON into lists we can manipulate programatically.
-       	       			  Filter will be the obvious choice when it comes time to select the appropriate data-set based on user input/desired output.
-- Will you use object-orientation? How? Object-orientation will be a useful tool in our arsenal to manipulate our data, and provide access to that data to 
-       	       			   	various modules of our program. 
+3. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart.
 <!---
 - Will you use functional approaches to processing your data? How?
 - Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
@@ -50,7 +47,7 @@ The idea here is to identify what ideas from the class you will use in carrying 
 - JSON to jsexpr
 
 ### Data Sets or other Source Materials
-We shall use the National Basketball Association's api to retrieve data from it's database (http://stats.nba.com). This data will be presented as json object which will be parsed, sorted and presented in forms of graphs. 
+We used an api to retrieve data from the National Basketball Association's database (http://stats.nba.com). This data is presented as json object which is processed and presented in forms of bargraphs. 
 
 <!--- How will you convert your data into a form usable for your project?   --->
 
@@ -99,14 +96,13 @@ You will be expected to turn in code, documentation, and data (as appropriate) a
 Write concrete steps for your schedule to move from concept to working system. 
 --->
 ### First Milestone (Sun Apr 9)
-The backed of the program should be done by this date. We should be able to process information retrieved from the database and pass it to drawing functions in processed-lists. This should also involve statistical evaluations if needed.
+We hoped to have the back-end of the program done by this date and we managed to accomplish that goal. We were able to process teh data we retrieved from the database and add the functionality to draw pass processed lists to the drawing procedures. Not many statistical evaluations were needed in this step, so none were done.
 
 ### Second Milestone (Sun Apr 16)
-By this date, we hope to have the visual part of the program completed. 
-We should have the user interface complete with all the available options that our program can handle. 
+By this date, we'd hoped to have the visual part of the program completed. However, we ran into a few problems that stagnated our progress. The initial apis we used stopped resopnding and we had to take down major parts of the program we'd already built. Considering the fact that we couldn't proceed efficiently without any data, we weren't able to meet this goal by the aforementioned fate. 
 
-### Public Presentation (Mon Apr 24, Wed Apr 26, or Fri Apr 28 [your date to be determined later])
-We hope that by this date we shall have a fuill functional program with both the visual and data processing parts of the program full implemented.
+### Public Presentation (Fri Apr 28)
+We now have a fully implmented and functional program. Both the visual and data processing parts of the program are fully implemented. We ran into some problems but at the moment we are pretty jhappy and overall impressed with what we've been able to accomplish.
 
 ## Group Responsibilities
 <!--- Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable. --->
@@ -122,7 +118,7 @@ We hope that by this date we shall have a fuill functional program with both the
 In the headings below, replace the silly names and GitHub handles with your actual ones.
 --->
 ### Patrick Kyoyetera: @legend855
-I will implment the visual part of the program, handle drawing charts and plots. I will also handle the statistical analysis of the data that we shall be processing.
+I was able to implment the data processing and plotting parts of the program. I took care of the statistical analysis on the data we pulled even thoughthere wasn't much to be done.
 
 
 ### Daniel DiTommaso @DanielDiTommaso
