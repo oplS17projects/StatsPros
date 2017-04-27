@@ -12,6 +12,7 @@
 
 (define-runtime-path htdocs "htdocs")
 (struct dropdownEntry (entry))
+(struct graphInfo (statName fileName))
 
 (define selectTeam
   (map (lambda(x) (dropdownEntry x)) (sort (retrieveTeamAbrv) string<?)))
@@ -83,6 +84,7 @@
   (define browserHeight (- (string->number (extract-binding/single 'browserheight (request-bindings request))) 250))
 
   (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
+  
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros"))
@@ -100,6 +102,9 @@
   (define statistic (extract-binding/single 'statsdropdown (request-bindings request)))
   (define stat1 (hash-ref (car player1stats) (string->symbol statistic)))
   (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
+
+  (define z (plot-singles player1name player2name (current-directory) graphInfo))
+  (print (graphInfo-statName (car z)))
     
   (define (response-generator make-url)
     (response/xexpr
