@@ -1,1 +1,0 @@
-("6.3" ("4611ae254d5bd901f5cc98433f71c1a3062a01ea" . "93d72c8e5eea2e8258366ab48dfc1737be65e4a0") (collects #"json" #"main.rkt") (collects #"net" #"http-client.rkt") (collects #"net" #"uri-codec.rkt") (collects #"net" #"url-connect.rkt") (collects #"net" #"url.rkt") (collects #"racket" #"list.rkt") (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
