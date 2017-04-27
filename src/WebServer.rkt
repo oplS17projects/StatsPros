@@ -82,44 +82,26 @@
   (define player2stats (retrievePlayerStats (findPlayerId player2)))
   (define browserWidth (- (string->number (extract-binding/single 'browserwidth (request-bindings request))) 117))
   (define browserHeight (- (string->number (extract-binding/single 'browserheight (request-bindings request))) 250))
-
-  (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
   
-  (define (response-generator make-url)
-    (response/xexpr
-     `(html (head (title "StatsPros"))
-            (body (h1 "Please select Statistic: ")
-                  (form ((action
-                          ,(make-url statsDropDownHandler)))
-                        ,(render-dropdownEntrys (makeDropdownEntries (hash-keys (car player1stats))) "statsdropdown")
-                        (input ((type "submit"))))
-                  ))))
-  (define (statsDropDownHandler request)
-    (render-statsFinal-page player1stats player2stats player1 player2 imgPath request))
-  (send/suspend/dispatch response-generator))
-
-(define (render-statsFinal-page player1stats player2stats player1name player2name imgPath request)
-  (define statistic (extract-binding/single 'statsdropdown (request-bindings request)))
-  (define stat1 (hash-ref (car player1stats) (string->symbol statistic)))
-  (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
-
-  (define z (plot-singles player1name player2name (current-directory) graphInfo))
-    
+  (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
+  (define graphs (plot-singles player1 player2 (current-directory) graphInfo)) ;browserWidth browserHeight))
+  
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros")
                   (link ((rel "stylesheet")
-                         (href "/statspros.css"))))
-            (body (h1 "Results: ")
-                  ,@(render-Graph-Images z)
-                  (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (~v stat1)))
-                  (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (~v stat2)))
-
-                  (div ((class "results"))
-                       (form ((action ,(make-url returnHomeHandler)))
-                   (input ((value "Reset")
-                           (type "submit"))))))
-            )))
+                         (href "/statspros.css")))
+                  (style ,(generateStyles graphs)))
+            (body (h1 "Please select Statistic: ")
+                  (form ((action "")
+                         (id "statSelect"))
+                        ,(render-dropdownEntrys (makeDropdownEntries (hash-keys (car player1stats))) "statsdropdown")
+                        (input ((type "submit"))))
+                  ,@(render-Graph-Images graphs)
+                  (form ((action ,(make-url returnHomeHandler)))
+                        (input ((value "Reset")
+                                (type "submit"))))
+                  (script ((type "text/javascript") (src "/listener.js")))))))
   (define (returnHomeHandler request)
     (render-StatsPros-page selectTeam request))
   (send/suspend/dispatch response-generator))
@@ -141,8 +123,14 @@
                    (src ,(string-append "/" (graphInfo-fileName x))))))
            listOfGraphInfo))
 
-;`(img ((class ,(symbol->string (graphInfo-statName (car listOfGraphInfo))))
-;         (src ,(string-append "/" (graphInfo-fileName (car listOfGraphInfo))))))
+(define (generateStyles listOfGraphInfo)
+  (define individualStyles (map (lambda (x)
+                                  (string-append (string-append "IMG." (symbol->string (graphInfo-statName x)))" {\n\tdisplay: none;\n}\n"))
+                                  listOfGraphInfo))
+  (define (combiner strList finalStr)
+    (if (null? strList) finalStr
+        (combiner (cdr strList) (string-append finalStr (car strList)))))
+  (combiner individualStyles ""))
 
 (require web-server/servlet-env)
 (serve/servlet start
