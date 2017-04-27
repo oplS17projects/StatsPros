@@ -104,7 +104,6 @@
   (define stat2 (hash-ref (car player2stats) (string->symbol statistic)))
 
   (define z (plot-singles player1name player2name (current-directory) graphInfo))
-  (print (graphInfo-statName (car z)))
     
   (define (response-generator make-url)
     (response/xexpr
@@ -112,8 +111,7 @@
                   (link ((rel "stylesheet")
                          (href "/statspros.css"))))
             (body (h1 "Results: ")
-                  (img ((src ,imgPath)
-                        (class "graph")))
+                  ,@(render-Graph-Images z)
                   (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player1name " - ") statistic) " - ") (~v stat1)))
                   (p ((class "resultsText")) ,(string-append (string-append (string-append (string-append player2name " - ") statistic) " - ") (~v stat2)))
 
@@ -136,6 +134,15 @@
 
 (define (parse-dropdownEntry bindings)
   (dropdownEntry (extract-binding/single 'entry bindings)))
+
+(define (render-Graph-Images listOfGraphInfo)
+  (map (lambda (x)
+           `(img ((class ,(symbol->string (graphInfo-statName x)))
+                   (src ,(string-append "/" (graphInfo-fileName x))))))
+           listOfGraphInfo))
+
+;`(img ((class ,(symbol->string (graphInfo-statName (car listOfGraphInfo))))
+;         (src ,(string-append "/" (graphInfo-fileName (car listOfGraphInfo))))))
 
 (require web-server/servlet-env)
 (serve/servlet start
