@@ -21,10 +21,18 @@
 ;; All the numerical stats in a player's hash
 (define list-of-plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
 
+(define team-colors '(DarkSlateBlue SeaGreen Black MidnightBlue Crimson DarkRed MediumBlue DodgerBlue
+                                    Red Blue Firebrick Gold RoyalBlue Yellow SteelBlue Tomato DarkOliveGreen
+                                    CornFlowerBlue OliveDrab WhiteSmoke CadetBlue Purple Cyan BlueViolet Fuschia
+                                    Indigo DarkGray DarkMagenta LightBLue LightSkyBlue))
+
+; (define get-team-color ())
+
 (define (map-vector lst1 lst2)
   (cond ((or (null? lst1) (null? lst2))
             error "Unequal list sizes")
         (else (map vector lst1 lst2))))
+
 
 (define (sym-vector sym1 sym2)
   (map vector sym1 sym2))
@@ -36,11 +44,8 @@
 (define (make-stats player)
   (retrievePlayerStats (findPlayerId player)))
 
-;(define KDHash-list (make-stats "Kevin Durant"))
-;(define KDHash (car KDHash-list))
-
-;; list of all the available statistics in the hash
-;;(define stats-list (hash-keys KDHash))
+(define KDHash-list (make-stats "Kevin Durant"))
+(define KDHash (car KDHash-list))
 
 ;; accumulate sum of stats list
 (define (sum-list lst)
@@ -101,16 +106,30 @@
     (define player-hash (make-stats player-name))
     (list-avg (extract-stat-value player-hash stat-label))))
 
-;(define (accumulate-single-stat player-name)
-;  (define player-hash (make-stats player-name))
-;  (define ()))
+
+(define (vector-list player)
+  (make-vector (accumulate-stats player)))
+;
+;(define (plot-singles p1 p2)
+;  (define p1-list (vector-list p1))
+;  (define p2-list (vector-list p2))
+;  ;(define count 0)
+;  (define (helper list1 list2 count)
+;    (cond ((or (null? list1) (null? list2))
+;           (print 'done))
+;          (else
+;           (begin (plot-single-stat (car list1) (car list2) count)
+;                  (+ count 1)
+;                  (helper (cdr list1) (cdr list2) count)))))
+;  (helper p1-list p2-list 0))
+
 
 ;; after getting the player's hash, map it over plottable stats and return 
 ;; season avg of these stats then pass to plot to make you a sweet chart
 (provide accumulate-single-stat)
 (provide accumulate-stats)
 (provide make-vector)
-(provide sym-vector)
+(provide vector-list)
 
 ;;To pass around file names create mapping of statistic to filename.
 ;(define filename (number->string (gensym)))
