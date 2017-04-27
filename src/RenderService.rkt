@@ -44,8 +44,6 @@
 (define (make-stats player)
   (retrievePlayerStats (findPlayerId player)))
 
-(define KDHash-list (make-stats "Kevin Durant"))
-(define KDHash (car KDHash-list))
 
 ;; accumulate sum of stats list
 (define (sum-list lst)

@@ -34,38 +34,45 @@
 
 ;; should use player ids to pass around images to the web server
 
-(define (plot-singles p1 p2)
+(struct graphInfo (statName fileName))
+
+(define (plot-singles p1 p2 currentDirectory)
   (define p1-list (vector-list p1))
   (define p2-list (vector-list p2))
-  (define (helper list1 list2 count c1 c2)
+;  (define list-of-graphs '())
+  (define (helper list1 list2 currentDirectory list-of-graphs)
     (cond ((or (null? list1) (null? list2))
-           (print 'done))
+           list-of-graphs)
           (else
-           (begin (plot-single-stat (car list1) (car list2) count c1 c2)
-                  (+ count 1)
-                  (helper (cdr list1) (cdr list2) count c1 c2)))))
-  (helper p1-list p2-list 0 45 76))
+           (helper (cdr list1)
+                   (cdr list2)
+                   currentDirectory
+                   (cons (plot-single-stat (car list1) (car list2) currentDirectory) list-of-graphs)))))
+  (helper p1-list p2-list currentDirectory '()))
 
 
 
   (define plot-single-stat
-    (λ (v1 v2 num c1 c2)
-      (plot (list
-             (discrete-histogram
-              (list v1)
-              #:skip 2.5
-              #:x-min 0
-              #:color c1
-              #:label "player1")
-             (discrete-histogram
-              (list v2)
-              #:skip 2.5
-              #:x-min 1
-              #:color c2
-              #:label "player2"))
-            #:out-file (string-join (list (symbol->string (gensym)) ".png"))
-            #:x-label "symbol-string stat-label"
-            #:y-label "Value")))
+    (λ (v1 v2 currentDirectory)
+      (define fileName (string-append (symbol->string (gensym)) ".png"))
+      (define imgPath (string-append (path->string currentDirectory) fileName))
+      (plot-file (list
+                  (discrete-histogram
+                   (list v1)
+                   #:skip 2.5
+                   #:x-min 0
+                   #:color 92
+                   #:label "player1")
+                  (discrete-histogram
+                   (list v2)
+                   #:skip 2.5
+                   #:x-min 1
+                   #:color 65
+                   #:label "player2"))
+                 imgPath
+                 #:x-label "symbol-string stat-label"
+                 #:y-label "Value")
+      (graphInfo (vector-ref v1 0) fileName)))
 
 ;; (plot (list (discrete-histogram )))
 (provide draw-main-plot)
