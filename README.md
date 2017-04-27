@@ -11,9 +11,9 @@ Double click to run. Must be force killed from Activity Monitor I've noticed.
 ### Statement
 <!--- Describe your project. Why is it interesting? Why is it interesting to you personally? What do you hope to learn? --->
 
-We're both interested in this project because we thought it'd be a perfect fit for our interests in sports and also mathematics. As a result we came up with this idea to visualize sports data in an interactive way. 
+We were both interested in this project because we thought it'd be a perfect fit for our interests in sports and mathematics. As a result we came up with this idea to visualize sports statistics in a visual and interactive way. 
 
-This project will require us to retrieve data from a database using an api and extract useful bits of information that we can use to draw graphs and/or charts to visualize statistical comparisons and also make predictions(\*).
+This project required data retrieval from the National Basketball Association's official database using an api and extracting useful data that we then used to draw graphs/charts to visualize statistical comparisons between individual pairs of players(\*).
 
 
 ### Analysis
