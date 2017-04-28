@@ -37,7 +37,9 @@
   (define (response-generator make-url)
     (response/xexpr
      `(html
-       (head ((title "StatsPros")))
+       (head (meta ((name "viewport")
+       	            (content "width=device-width,height=device-height,initial-scale=1.0"))
+       	     (title "StatsPros")))
        (body
         (h1 "Please select Teams: ")
         (form ((action
@@ -53,7 +55,10 @@
 (define (render-playerSelect-page request)
   (define (response-generator make-url)
     (response/xexpr
-     `(html (head (title "StatsPros"))
+     `(html
+	(head (meta ((name "viewport")
+       	             (content "width=device-width,height=device-height,initial-scale=1.0"))
+       	  	(title "StatsPros")))
             (body (h1 "Please select Players: ")
                   (form ((action
                           ,(make-url playerDropDownHandler)))
@@ -88,8 +93,8 @@
   (define player2 (extract-binding/single 'player2dropdown (request-bindings request)))
   (define player1stats (retrievePlayerStats (findPlayerId player1)))
   (define player2stats (retrievePlayerStats (findPlayerId player2)))
-  (define browserWidth (- (string->number (extract-binding/single 'browserwidth (request-bindings request))) 117))
-  (define browserHeight (- (string->number (extract-binding/single 'browserheight (request-bindings request))) 250))
+  (define browserWidth (string->number (extract-binding/single 'browserwidth (request-bindings request))))
+  (define browserHeight (string->number (extract-binding/single 'browserheight (request-bindings request))))
   (define list-of-plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
   
   (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
@@ -100,7 +105,9 @@
     (response/xexpr
      `(html (head (title "StatsPros")
                   (link ((rel "stylesheet")
-                         (href "/statspros.css"))))
+                         (href "/statspros.css")))
+			 (meta ((name "viewport")
+       	             (content "width=device-width,height=device-height,initial-scale=1.0"))))
                   ;(style ,(generateStyles graphs)))
             (body (h1 "Please select Statistic: ")
                   (form ((action "")
@@ -151,6 +158,8 @@
 
 (require web-server/servlet-env)
 (serve/servlet start
+               #:listen-ip #f
+               #:servlet-path "/statspros.rkt"
                #:servlet-regexp #rx".*\\.rkt"
 	       #:server-root-path (current-directory)
                #:extra-files-paths (list (build-path (current-directory) "htdocs")))
