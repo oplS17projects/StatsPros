@@ -28,10 +28,13 @@ We used several approaches from class to accomplish the task at hand:
 ,(render-dropdownEntrys
   (map (lambda (x) (dropdownEntry x))
    (filter (lambda (x) (playerEntryExists? x))
-    (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))))`
+    (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))))
+    ```
+    
+    
 - Will you use functional approaches to processing your data? How?
  All of our data is processed through functional approaches. We wrote a handful of procedures to manipulate the data in a way particularly suited to the usage. There are numerous examples throughout the code of multiple-series transformations we do to filter and reduce the data and break it into data structures we can use throughout the application. 
- ```
+```
  (define (parseResponse responseString)
   (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'rowSet))
   ```
