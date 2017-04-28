@@ -24,6 +24,7 @@ We used several approaches from class to accomplish the task at hand:
 2. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
 3. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart. Map filter and reduce were all critical for transforming the data to use in the webserver where appropriate.
+
 ```scheme
 ,(render-dropdownEntrys
 (map (lambda (x) (dropdownEntry x))
@@ -33,7 +34,7 @@ We used several approaches from class to accomplish the task at hand:
 - Will you use functional approaches to processing your data? How?
  All of our data is processed through functional approaches. We wrote a handful of procedures to manipulate the data in a way particularly suited to the usage. There are numerous examples throughout the code of multiple-series transformations we do to filter and reduce the data and break it into data structures we can use throughout the application. 
 
-```
+```scheme
 (define (parseResponse responseString)
 (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'rowSet))
 
