@@ -23,6 +23,19 @@ We used several approaches from class to accomplish the task at hand:
 1. Data Abstraction: When the call to draw graphs from the browser is made, the calling procedure need only know the names of the players whose statistics are to be compared. The multitude of procedures that process the player data, filter out the plottable numbers, statistic names and values, averaging out the numbers over the course of the entire season, and mapping statistic names over the values so we can  is not visible outside of the file plotting procedure which is called to plot charts.
 2. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
+Recursion is also used to generate the inital css styles found on the page.
+```scheme
+(define (generateStyles listOfGraphInfo)
+  (define individualStyles (map (lambda (x)
+                                  (string-append (string-append "IMG." (symbol->string (graphInfo-statName x)))" { display: none;\n}\n"))
+                                  listOfGraphInfo))
+  (define (combiner strList finalStr)
+    (if (null? strList) finalStr
+        (combiner (cdr strList) (string-append finalStr (car strList)))))
+  (combiner individualStyles ""))
+
+```
+
 3. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart. Map filter and reduce were all critical for transforming the data to use in the webserver where appropriate.
 
 ```scheme
