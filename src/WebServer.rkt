@@ -58,9 +58,17 @@
                   (form ((action
                           ,(make-url playerDropDownHandler)))
                         (div ,(extract-binding/single 'team1dropdown (request-bindings request)))
-                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) (filter (lambda (x) (playerEntryExists? x)) (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request))))) "player1dropdown")
+                        ,(render-dropdownEntrys
+                          (map (lambda (x) (dropdownEntry x))
+                               (filter (lambda (x) (playerEntryExists? x))
+                                       (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))))
+                          "player1dropdown")
                         (div ,(extract-binding/single 'team2dropdown (request-bindings request)))
-                        ,(render-dropdownEntrys (map (lambda (x) (dropdownEntry x)) (filter (lambda (x) (playerEntryExists? x)) (findPlayersOnTeam (extract-binding/single 'team2dropdown (request-bindings request))))) "player2dropdown")
+                        ,(render-dropdownEntrys
+                          (map (lambda (x) (dropdownEntry x))
+                               (filter (lambda (x) (playerEntryExists? x))
+                                       (findPlayersOnTeam (extract-binding/single 'team2dropdown (request-bindings request)))))
+                          "player2dropdown")
                         (div (input ((type "submit"))))
                         (input ((type "hidden")
                            (name "browserWidth")
@@ -82,20 +90,26 @@
   (define player2stats (retrievePlayerStats (findPlayerId player2)))
   (define browserWidth (- (string->number (extract-binding/single 'browserwidth (request-bindings request))) 117))
   (define browserHeight (- (string->number (extract-binding/single 'browserheight (request-bindings request))) 250))
+  (define list-of-plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
   
   (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
-  (define graphs (plot-singles player1 player2 (current-directory) graphInfo)) ;browserWidth browserHeight))
+  (define single-statGraphs (plot-singles player1 player2 (current-directory) graphInfo browserWidth browserHeight))
+  (define graphs (cons (graphInfo (string->symbol "All Stats") imgPath) single-statGraphs))
   
   (define (response-generator make-url)
     (response/xexpr
      `(html (head (title "StatsPros")
                   (link ((rel "stylesheet")
-                         (href "/statspros.css")))
-                  (style ,(generateStyles graphs)))
+                         (href "/statspros.css"))))
+                  ;(style ,(generateStyles graphs)))
             (body (h1 "Please select Statistic: ")
                   (form ((action "")
                          (id "statSelect"))
-                        ,(render-dropdownEntrys (makeDropdownEntries (hash-keys (car player1stats))) "statsdropdown")
+                        ,(render-dropdownEntrys (makeDropdownEntries
+                                                 (cons (string->symbol "All Stats")
+                                                                           (filter (lambda(x) (member x list-of-plottable-stats))
+                                                                                   (hash-keys (car player1stats)))))
+                                                "statsdropdown")
                         (input ((type "submit"))))
                   ,@(render-Graph-Images graphs)
                   (form ((action ,(make-url returnHomeHandler)))
@@ -107,7 +121,8 @@
   (send/suspend/dispatch response-generator))
 
 (define (render-dropdownEntrys dropdown id)
-  `(select ((name ,id))
+  `(select ((name ,id)
+            (id "dropdown"))
            ,@(map render-dropdownEntry dropdown)))
 
 (define (render-dropdownEntry a-dropdownEntry)
@@ -119,8 +134,10 @@
 
 (define (render-Graph-Images listOfGraphInfo)
   (map (lambda (x)
-           `(img ((class ,(symbol->string (graphInfo-statName x)))
-                   (src ,(string-append "/" (graphInfo-fileName x))))))
+           `(img ((name ,(symbol->string (graphInfo-statName x)))
+                  (id ,(symbol->string (graphInfo-statName x)))
+                  (style "display:none")
+                  (src ,(string-append "/" (graphInfo-fileName x))))))
            listOfGraphInfo))
 
 (define (generateStyles listOfGraphInfo)

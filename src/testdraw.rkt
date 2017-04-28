@@ -28,10 +28,10 @@
                  #:x-label "Statistics"
                  #:y-label "Values"
                  #:title (string-join (list player1 "vs" player2))))
-    (string-append "/" filePath)))
+    filePath))
 
 ;; should use player ids to pass around images to the web server
-(define (plot-singles p1 p2 currentDirectory graphInfo)
+(define (plot-singles p1 p2 currentDirectory graphInfo browserWidth browserHeight)
   (define p1-list (vector-list p1))
   (define p2-list (vector-list p2))
 ; (define list-of-graphs '())
@@ -42,12 +42,12 @@
            (helper (cdr list1)
                    (cdr list2)
                    currentDirectory
-                   (cons (plot-single-stat (car list1) (car list2) currentDirectory graphInfo p1 p2) list-of-graphs)))))
+                   (cons (plot-single-stat (car list1) (car list2) currentDirectory graphInfo p1 p2 browserHeight browserWidth) list-of-graphs)))))
   (helper p1-list p2-list currentDirectory '()))
 
 
 (define plot-single-stat
-  (λ (v1 v2 currentDirectory graphInfo p1 p2)
+  (λ (v1 v2 currentDirectory graphInfo p1 p2 browserWidth browserHeight)
     (define fileName (string-append (symbol->string (gensym)) ".png"))
     (define imgPath (string-append (path->string currentDirectory) fileName))
     (parameterize ([plot-width  browserWidth]
