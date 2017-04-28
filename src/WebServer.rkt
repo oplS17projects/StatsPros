@@ -94,11 +94,11 @@
   (define player1stats (retrievePlayerStats (findPlayerId player1)))
   (define player2stats (retrievePlayerStats (findPlayerId player2)))
   (define browserWidth (string->number (extract-binding/single 'browserwidth (request-bindings request))))
-  (define browserHeight (string->number (extract-binding/single 'browserheight (request-bindings request))))
+  (define browserHeight (- (string->number (extract-binding/single 'browserheight (request-bindings request))) 100))
   (define list-of-plottable-stats '(to pf fgm fga fg3m fg3a ftm fta oreb dreb ast blk plus_minus pts))
-  
+
   (define imgPath (draw-main-plot (current-directory) player1 player2 browserWidth browserHeight))
-  (define single-statGraphs (plot-singles player1 player2 (current-directory) graphInfo browserWidth browserHeight))
+  (define single-statGraphs (plot-singles player1 player2 (current-directory) graphInfo browserHeight browserWidth))
   (define graphs (cons (graphInfo (string->symbol "All Stats") imgPath) single-statGraphs))
   
   (define (response-generator make-url)
@@ -108,7 +108,7 @@
                          (href "/statspros.css")))
 			 (meta ((name "viewport")
        	             (content "width=device-width,height=device-height,initial-scale=1.0"))))
-                  ;(style ,(generateStyles graphs)))
+            (style ,(generateStyles graphs))
             (body (h1 "Please select Statistic: ")
                   (form ((action "")
                          (id "statSelect"))
@@ -118,10 +118,10 @@
                                                                                    (hash-keys (car player1stats)))))
                                                 "statsdropdown")
                         (input ((type "submit"))))
-                  ,@(render-Graph-Images graphs)
                   (form ((action ,(make-url returnHomeHandler)))
                         (input ((value "Reset")
                                 (type "submit"))))
+                  ,@(render-Graph-Images graphs)
                   (script ((type "text/javascript") (src "/listener.js")))))))
   (define (returnHomeHandler request)
     (render-StatsPros-page selectTeam request))
@@ -149,7 +149,7 @@
 
 (define (generateStyles listOfGraphInfo)
   (define individualStyles (map (lambda (x)
-                                  (string-append (string-append "IMG." (symbol->string (graphInfo-statName x)))" {\n\tdisplay: none;\n}\n"))
+                                  (string-append (string-append "IMG." (symbol->string (graphInfo-statName x)))" { display: none;\n}\n"))
                                   listOfGraphInfo))
   (define (combiner strList finalStr)
     (if (null? strList) finalStr
