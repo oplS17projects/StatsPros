@@ -20,7 +20,19 @@ This project required data retrieval from the National Basketball Association's 
 Explain what approaches from class you will bring to bear on the project.
 
 We used several approaches from class to accomplish the task at hand:
-1. Data Abstraction: When the call to draw graphs from the browser is made, the calling procedure need only know the names of the players whose statistics are to be compared. The multitude of procedures that process the player data, filter out the plottable numbers, statistic names and values, averaging out the numbers over the course of the entire season, and mapping statistic names over the values so we can  is not visible outside of the file plotting procedure which is called to plot charts.
+1. Data Abstraction: When the call to draw graphs from the browser is made, the calling procedure need only know the names of the players whose statistics are to be compared. The multitude of procedures that process the player data, filter out the plottable numbers, statistic names and values, averaging out the numbers over the course of the entire season, and mapping statistic names over the values so we can  is not visible outside of the file plotting procedure which is called to plot charts. An example is the procedure that returns the list of hashmaps of a single player's stats overthe course of 82 games in a season:
+
+```
+;; return list of individual game stats from players' season stat list 
+(define (extract-stat-value hash-list key)
+  (define (extract-helper hash-list numbers-list)
+    (cond ((null? hash-list) numbers-list)
+          (else
+           (extract-helper (cdr hash-list)
+                               (cons  (get-stat (get-hash hash-list) key) numbers-list)))))
+  (extract-helper hash-list '()))
+```
+
 2. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
 Recursion is also used to generate the inital css styles found on the page.
@@ -61,10 +73,11 @@ Recursion is also used to generate the inital css styles found on the page.
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
 - Will you use lazy evaluation approaches?
 --->
-Since the data we'll be using for will be retrieved from a JSON object, we shall need to create different presentations of this data for whichever style chart the user requests or is available. 
+Since the data we're be using is retrieved from a JSON object, we created different presentations of this data for whichever style chart the user requests or is available. 
 
-some data will need to map different statistical functions over, like the mean shooting percentage over a list of players anbd their respective lists of shots data. This will require creating objects to represent different players and teams, thus the need for object orientation.
-We'll need to recursively call functions to 'cdr' through while process =ing data in different lists and/or ring buffers.
+Some data maps different statistical functions, like the mean shooting percentage, over a list of players and their respective lists of shots data. This required creating objects to represent different players and teams, thus the need for object orientation.
+We recursively call functions to 'cdr' through while processing data in different lists.
+
 <!---
 The idea here is to identify what ideas from the class you will use in carrying out your project. 
 
@@ -77,23 +90,23 @@ The idea here is to identify what ideas from the class you will use in carrying 
 - Interact with databases
 - JSON to jsexpr
 
+We use CSS and Javascript to help format the final representation of the charts in a browser window in a visually appealing manner.
+
 ### Data Sets or other Source Materials
-We used an api to retrieve data from the National Basketball Association's database (http://stats.nba.com). This data is presented as json object which is processed and presented in forms of bargraphs. 
+We used an api to retrieve data from the National Basketball Association's database (http://stats.nba.com). This data is then processed and presented in forms of bargraphs. 
 
 <!--- How will you convert your data into a form usable for your project?   --->
 
-The data we're using is received in JSON format. (snippet in testcode.rkt) We plan on using racket's list processing to make use present data belonging to one entity. 
+The data we're using is received in JSON format. (snippet in testcode.rkt) We used racket's list processing to make use present data belonging to one player (list of hashmaps). 
 
 
 ### Deliverable and Demonstration
 
-We hope to have a fully funtional program that can take input retrieved from a database, and present it in a format that a user chooses. If a user want s to compare different statistics between two different players or teams, theyy can fire up the repl, and choose from the options listed in a menu. Comparisons are to be presented as graphs/plots and charts if manageable. 
+We currently have a fully funtional program that retrieves data from the NBA's official database, and presents it as bar graphs of different statistics that a user chooses. If a user wants to compare different statistics between two different players or teams, they can fire up the browser, and choose from the options listed in a menu. Comparisons are all presented as graphs. 
 
-The program will therefore rely entirely on data provided from the stats.nba.com website. Although if we manage to 
- implement the portion for the NBA, we may try to attempt to do the same for data from other sports like soccer or baseball. 
+Given the problems we encountered dealing with different apis, we did not continue with some of the features we had listed as addons. Features like predicting future game results depending on past game data were cut out because with the change of apis, came a change of what kind of data we had access to and it's format.
 
-The only form of interactivity that has been envisioned will be the ability to have a user choose between different players or different teams and compare certain aspects that we can provide. 
-This will involve some sort of menu that a user can check out for the supported teams and/or players.
+The only form of interactivity that has been implemented is the ability to choose between different players from different teams teams and compare certain aspects of their games. 
 
 <!---
 Explain exactly what you'll have at the end. What will it be able to do at the live demo?
@@ -108,12 +121,17 @@ Will it be interactive? Can you show it working? This project involves a live de
 How will you know if you are successful? 
 <!-- If you include some kind of _quantitative analysis,_ that would be good.--->
 
-If we can successfully process each user's request from the given options and visualize the requested comparisons and/or make future predictions(this willbe implmented if there's enough time left when the main project is complete), while always processing the latest available data from the league's games, we shall have successfully completed out project.
+We can successfully provide statistics for the 2016/16 season of the NBA. This was our primary goal at the beginning of this project and we are confident that we accomplished it.
+We can successfully process a user's request from the given options and visualize the requested comparisons. Some of the stretch goals we had were not implemented but despite that, we still accomplished the primary goals of this project.
 
 ## Architecture Diagram
 ![Alt text](/resources/ArchDiag.jpg?raw=true)
 
-Create several paragraphs of narrative to explain the pieces and how they interoperate.
+### Process
+When a user fires up the browser, they are met with precompiled lists of teams and players. When two players are chosen, their season statistics are retrieved as a list of hashmaps where each hash represents a single game the player participated in during the aforementioned season. When this list is received, individual stat values are filtered out, placed ina list and that list is averaged out over the number of games the player participated in. 
+This happens for all the available stats in the player's hash. A new list of average values is created and mapped with the names of the statistics to create a list of vectors that are passed to ` (draw-main-plot) ` which returns all the stats in one chart. 
+The `(plot-singles)` procedure is recursvely called with each vetor in that list to plot individual charts and each is formatted with CSS and displayed in  the browser. 
+
 
 ### First Milestone (Sun Apr 9)
 We hoped to have the back-end of the program done by this date and we managed to accomplish that goal. We were able to process teh data we retrieved from the database and add the functionality to draw pass processed lists to the drawing procedures. Not many statistical evaluations were needed in this step, so none were done.
@@ -138,7 +156,7 @@ We now have a fully implmented and functional program. Both the visual and data 
 In the headings below, replace the silly names and GitHub handles with your actual ones.
 --->
 ### Patrick Kyoyetera: @legend855
-I was able to implment the data processing and plotting parts of the program. I took care of the statistical analysis on the data we pulled even thoughthere wasn't much to be done.
+I was able to implment the data processing and plotting parts of the program. I took care of the statistical analysis on the data we pulled even though there wasn't much to be done.
 
 
 ### Daniel DiTommaso @DanielDiTommaso
