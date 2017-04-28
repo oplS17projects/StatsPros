@@ -23,9 +23,26 @@ We used several approaches from class to accomplish the task at hand:
 1. Data Abstraction: When the call to draw graphs from the browser is made, the calling procedure need only know the names of the players whose statistics are to be compared. The multitude of procedures that process the player data, filter out the plottable numbers, statistic names and values, averaging out the numbers over the course of the entire season, and mapping statistic names over the values so we can  is not visible outside of the file plotting procedure which is called to plot charts.
 2. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
-3. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart.
-<!---
+3. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart. Map filter and reduce were all critical for transforming the data to use in the webserver where appropriate. 
+```
+                        ,(render-dropdownEntrys
+                          (map (lambda (x) (dropdownEntry x))
+                               (filter (lambda (x) (playerEntryExists? x))
+                                       (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))))
+                                       ```
+
 - Will you use functional approaches to processing your data? How?
+ All of our data is processed through functional approaches. We wrote a handful of procedures to manipulate the data in a way particularly suited to the usage. There are numerous examples throughout the code of multiple-series transformations we do to filter and reduce the data and break it into data structures we can use throughout the application. 
+ ```
+ (define (parseResponse responseString)
+  (hash-ref (car (hash-ref (string->jsexpr responseString) 'resultSets)) 'rowSet))
+  ```
+  ```
+  (define (findPlayersOnTeam teamAbv)
+  (map (lambda (x) (hash-ref x 'display_name)) (hash-ref (newAPIRoster teamAbv) 'players)))
+  ```
+<!---
+
 - Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
 - Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
 - Will you use lazy evaluation approaches?
@@ -84,17 +101,6 @@ If we can successfully process each user's request from the given options and vi
 
 Create several paragraphs of narrative to explain the pieces and how they interoperate.
 
-## Schedule
-<!---Explain how you will go from proposal to finished product. 
-
-There are three deliverable milestones to explicitly define, below.
-
-The nature of deliverables depend on your project, but may include things like processed data ready for import, core algorithms implemented, interface design prototyped, etc. 
-
-You will be expected to turn in code, documentation, and data (as appropriate) at each of these stages.
-
-Write concrete steps for your schedule to move from concept to working system. 
---->
 ### First Milestone (Sun Apr 9)
 We hoped to have the back-end of the program done by this date and we managed to accomplish that goal. We were able to process teh data we retrieved from the database and add the functionality to draw pass processed lists to the drawing procedures. Not many statistical evaluations were needed in this step, so none were done.
 
@@ -122,6 +128,4 @@ I was able to implment the data processing and plotting parts of the program. I 
 
 
 ### Daniel DiTommaso @DanielDiTommaso
-Setting up web application / user interface to communicate with the user. 
-Data retrieval and storage for use elsewhere in the application. 
-   
+Successfully implemented DataService API which can communicate with two different statistics APIs. WebServer which dynamically builds HTML to build a user interface that is accessible from the web. 
