@@ -69,3 +69,12 @@ Another example of this  idea is the `(extract-stat-value hash-list key)` takes 
                                (cons  (get-stat (get-hash hash-list) key) numbers-list)))))
   (extract-helper hash-list '()))
   ```
+# 3. Map
+```
+(define (map-vector lst1 lst2)
+  (cond ((or (null? lst1) (null? lst2))
+            error "Unequal list sizes")
+        (else (map vector lst1 lst2))))
+```
+This procedure creates maps the list of statistics to the list of average statistics of teh player which are returned to `(plot-file)` to make a plot.
+
