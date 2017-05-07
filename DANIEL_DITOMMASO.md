@@ -30,7 +30,8 @@ The code uses four libraries:
 * ```web-server/servlet``` is the library responsible for the core of the web application. it provides handling for browser requests and serving content.
 
 # Key Code Excerpts
-##1. Recursion: For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
+## 1. Recursion:
+For every player, we use recursion to traverse their list of hashmaps, extract a single stat from each list of hash maps, and to accumulate a stat over 82 games in a regular season.
 
 Recursion is also used to generate the inital css styles found on the page.
 ```scheme
@@ -44,7 +45,8 @@ Recursion is also used to generate the inital css styles found on the page.
   (combiner individualStyles ""))
 ```
 
-##2. Map/Filter/Reduce: We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart. Map filter and reduce were all critical for transforming the data to use in the webserver where appropriate.
+## 2. Map/Filter/Reduce:
+We used map, after getting the list of average values of each statistic throughout the length of the NBA season for each player, to make a list of vectors with the stat we're plotting and each value. This is the vector that's passed to `(plot-singles)` to in turn return a bar chart. Map filter and reduce were all critical for transforming the data to use in the webserver where appropriate.
 
 ```scheme
 ,(render-dropdownEntrys
@@ -53,8 +55,8 @@ Recursion is also used to generate the inital css styles found on the page.
    (findPlayersOnTeam (extract-binding/single 'team1dropdown (request-bindings request)))))
 ```
 
-##3. Functional Approaches
- All of our data is processed through functional approaches. We wrote a handful of procedures to manipulate the data in a way particularly suited to the usage. There are numerous examples throughout the code of multiple-series transformations we do to filter and reduce the data and break it into data structures we can use throughout the application. 
+## 3. Functional Approaches
+All of our data is processed through functional approaches. We wrote a handful of procedures to manipulate the data in a way particularly suited to the usage. There are numerous examples throughout the code of multiple-series transformations we do to filter and reduce the data and break it into data structures we can use throughout the application. 
 
 ```scheme
 (define (parseResponse responseString)
